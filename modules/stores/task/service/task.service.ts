@@ -103,30 +103,6 @@ class TaskService {
     
             task.next_date = body[i]["next_date"];
             task.current_complete = body[i]["complete"];
-    
-            if (task.current_complete == true) {
-                if (task.next_date != null) {
-                    let next_date: Date = new Date(task.next_date);
-    
-                    switch (task.repeat) {
-                        case "Daily": {
-                            next_date.getDate() + 1
-                            break;
-                        }
-                        case "Weekly": {
-                            const curr: Date = new Date();
-                            next_date = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
-                            break;
-                        }
-                        case "Monthly": {
-                            next_date = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
-                            break;
-                        }
-                    }
-    
-                    task.next_date = next_date.toISOString();
-                }
-            }
 
             response = await taskRepository.update(task);
         }
@@ -146,30 +122,6 @@ class TaskService {
 
         task.next_date = body["next_date"];
         task.current_complete = body["complete"] == "true";
-
-        if (task.current_complete == true) {
-            if (task.next_date != null) {
-                let next_date: Date = new Date(task.next_date);
-
-                switch (task.repeat) {
-                    case "Daily": {
-                        next_date.getDate() + 1
-                        break;
-                    }
-                    case "Weekly": {
-                        const curr: Date = new Date();
-                        next_date = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
-                        break;
-                    }
-                    case "Monthly": {
-                        next_date = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
-                        break;
-                    }
-                }
-
-                task.next_date = next_date.toISOString();
-            }
-        }
 
         return await taskRepository.update(task);
     }
