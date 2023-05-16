@@ -86,7 +86,7 @@ class GoalService {
         goal.description = body["description"];
         goal.owner = ctx.params.userID;
 
-        const tasks: Array<any> = body["tasks"];
+        const tasks: Array<any> = JSON.parse(body["tasks"]);
 
         const data = await goalRepository.create(goal);
 
@@ -101,9 +101,9 @@ class GoalService {
         let insertString: string = "";
 
         if (tasks.length > 0) {
-            insertString = "INSERT INTO \"task\" (\"name\", \"goal_id\", \"repeat\", \"next_date\") VALUES "
+            insertString = "INSERT INTO \"task\" (\"name\", \"goal_id\", \"repeat\", \"next_date\") VALUES ";
 
-            tasks.forEach(element => {
+            tasks.forEach((element) => {
                 let task: Task = new Task()
 
                 task.name = element["name"];
@@ -113,7 +113,7 @@ class GoalService {
 
                 switch (task.repeat) {
                     case "Daily": {
-                        next_date.getDate() + 1
+                        next_date = new Date(next_date.getFullYear(), next_date.getMonth(), next_date.getDate() + 1);
                         break;
                     }
                     case "Weekly": {
@@ -134,7 +134,8 @@ class GoalService {
                 if (tasks.indexOf(element) != tasks.length-1) {
                     insertString += ", "
                 }
-            })
+
+            });
         }
 
         return await goalRepository.createTasks(insertString);
