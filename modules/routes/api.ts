@@ -18,7 +18,7 @@ export const api = (router: any) => {
         .get("/api/v1/user/:userID/goals/:goalID/tasks", TaskController.getAll)
         .get("/api/v1/user/:userID/goals/:goalID/tasks/:taskID", TaskController.getByID)
         .post("/api/v1/user/:userID/goals/:goalID/tasks", TaskController.create)
-        .patch("/api/v1/user/:userID/goals/:goalID/tasks", TaskController.updateMultiple)
+        // .patch("/api/v1/user/:userID/goals/:goalID/tasks", TaskController.updateMultiple)
         .patch("/api/v1/user/:userID/goals/:goalID/tasks/:taskID", TaskController.update)
         .delete("/api/v1/user/:userID/goals/:goalID/tasks/:taskID", TaskController.delete)
 };

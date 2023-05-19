@@ -4,6 +4,6 @@ export default class Task {
     name?: string;
     start_date?: string;
     repeat?: string;
-    current_complete?: boolean;
+    complete?: boolean;
     next_date?: string;
 }

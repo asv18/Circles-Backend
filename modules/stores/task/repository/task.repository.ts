@@ -12,11 +12,13 @@ class TaskRepository {
     }
 
     async create(task: Task): Promise<any> {
-        return await database.queryArray(`INSERT INTO "task" ("name", "goal_id", "repeat", "next_date") VALUES ('${task.name}', '${task.goal_id}', '${task.repeat}','${task.next_date}');`,)
+        return await database.queryArray(`INSERT INTO "task" ("name", "goal_id", "repeat", "next_date") VALUES ('${task.name}', '${task.goal_id}', '${task.repeat}','${task.next_date}');`)
     }
 
     async update(task: Task): Promise<any> {
-        return await database.queryArray(`UPDATE "task" SET "name" = '${task.name}', "repeat" = '${task.repeat}', "next_date" = '${task.next_date}', "complete" = '${task.current_complete}' WHERE "id" = ${task.id} AND "goal_id" = '${task.goal_id}';`)
+        //console.log(`UPDATE "task" SET "name" = '${task.name}', "repeat" = '${task.repeat}', "next_date" = '${task.next_date.toString()}', "complete" = '${task.complete}' WHERE "id" = ${task.id} AND "goal_id" = '${task.goal_id}';`)
+
+        return await database.queryArray(`UPDATE "task" SET "name" = '${task.name}', "repeat" = '${task.repeat}', "next_date" = '${task.next_date.toString()}', "complete" = '${task.complete}' WHERE "id" = ${task.id} AND "goal_id" = '${task.goal_id}';`)
     }
 
     async delete(id: bigint, goal_id: string): Promise<any> {

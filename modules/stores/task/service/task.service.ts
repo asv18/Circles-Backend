@@ -14,6 +14,33 @@ class TaskService {
                 task[item.name] = a_task[index]
             });
 
+            let next_date = new Date()
+
+            //console.log((new Date()).getTime() >= task.next_date.getTime() && task.complete && task.repeat !== 'Never')
+
+            if ((new Date()).getTime() >= task.next_date.getTime() && task.complete && task.repeat !== 'Never')
+            {
+                switch (task.repeat) {
+                    case "Daily": {
+                        next_date = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay() + 1)
+                        break;
+                    }
+                    case "Weekly": {
+                        const curr: Date = new Date();
+                        next_date = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
+                        break;
+                    }
+                    case "Monthly": {
+                        next_date = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
+                        break;
+                    }
+                }
+
+                task.next_date = next_date;
+                task.complete = false;
+                taskRepository.update(task);
+            }
+
             const taskJSON: JSON = <JSON><any> {
                 "id": task.id.toString(),
                 "goal_id": task.goal_id,
@@ -47,7 +74,7 @@ class TaskService {
             "start_date": task.start_date,
             "next_date": task.next_date,
             "repeat": task.repeat,
-            "complete": task.complete.toString()
+            "complete": task.complete
         }
         
         return taskJSON;
@@ -67,7 +94,7 @@ class TaskService {
 
         switch (task.repeat) {
             case "Daily": {
-                next_date.getDate() + 1
+                next_date = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay() + 1)
                 break;
             }
             case "Weekly": {
@@ -102,7 +129,7 @@ class TaskService {
             task.repeat = body[i]["repeat"];
     
             task.next_date = body[i]["next_date"];
-            task.current_complete = body[i]["complete"];
+            task.complete = body[i]["complete"];
 
             response = await taskRepository.update(task);
         }
@@ -121,7 +148,7 @@ class TaskService {
         task.repeat = body["repeat"];
 
         task.next_date = body["next_date"];
-        task.current_complete = body["complete"] == "true";
+        task.complete = body["complete"];
 
         return await taskRepository.update(task);
     }
