@@ -7,6 +7,7 @@ class GoalService {
 
     async getAll(uuid: string): Promise<any> {
         const data = await goalRepository.getAll(uuid)
+
         let goals = new Array<JSON>();
 
         data.rows.map((a_goal: []) => {
@@ -98,13 +99,13 @@ class GoalService {
             });
         });
 
-        let insertString: string = "";
+        let insertString = "";
 
         if (tasks.length > 0) {
             insertString = "INSERT INTO \"task\" (\"name\", \"goal_id\", \"repeat\", \"next_date\") VALUES ";
 
             tasks.forEach((element) => {
-                let task: Task = new Task()
+                const task: Task = new Task()
 
                 task.name = element["name"];
                 task.repeat = element["repeat"];
@@ -113,16 +114,15 @@ class GoalService {
 
                 switch (task.repeat) {
                     case "Daily": {
-                        next_date = new Date(next_date.getFullYear(), next_date.getMonth(), next_date.getDate() + 1);
+                        next_date = new Date(next_date.getFullYear(), next_date.getMonth(), next_date.getDay() + 1)
                         break;
                     }
                     case "Weekly": {
-                        const curr: Date = new Date();
-                        next_date = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
+                        next_date = new Date(next_date.setDate(next_date.getDate() - next_date.getDay() + 6));
                         break;
                     }
                     case "Monthly": {
-                        next_date = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
+                        next_date = new Date(next_date.getFullYear(), next_date.getMonth() + 1, 0)
                         break;
                     }
                 }

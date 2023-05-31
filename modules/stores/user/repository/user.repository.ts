@@ -3,6 +3,9 @@ import database from "../../../../database.ts";
 import User from "../dto/user.dto.ts";
 
 class UserRepository {
+    async getAll(): Promise<any> {
+        return await database.queryArray(`SELECT * FROM "user";`)
+    }
 
     async getByAuth(authID: string): Promise<any> {
         return await database.queryArray(`SELECT * FROM "user" WHERE "authID" = '${authID}';`)

@@ -2,6 +2,30 @@ import userRepository from "../repository/user.repository.ts";
 import User from "../dto/user.dto.ts";
 
 class UserService {
+    async getAll(): Promise<any> {
+        const data = await userRepository.getAll()
+
+        let users = new Array<JSON>();
+
+        data.rows.map((a_user: []) => {
+            const user: any = new User();
+
+            data.rowDescription.columns.map((item: any, index: number) => {
+                user[item.name] = a_user[index]
+            });
+
+            const userJson: JSON = <JSON><any> {
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "username": user.username,
+                "id": user.id,
+            }
+
+            users.push(userJson);
+        });
+
+        return users;
+    }
 
     async getByAuth(password: string): Promise<any> {
         const data = await userRepository.getByAuth(password);
@@ -16,6 +40,7 @@ class UserService {
         const userJSON: JSON = <JSON><any> {
             "id": user.id
         }
+
 
         return userJSON;
     }
@@ -41,6 +66,7 @@ class UserService {
             "authID": user.authID
         }
 
+
         return userJSON;
     }
 
@@ -52,7 +78,6 @@ class UserService {
         user.first_name = body["first_name"];
         user.last_name = body["last_name"];
         user.username = body["username"];
-        user.password = body["password"];
         user.email = body["email"];
         user.authID = body["authID"];
 

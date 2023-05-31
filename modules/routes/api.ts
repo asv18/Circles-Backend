@@ -21,4 +21,5 @@ export const api = (router: any) => {
         // .patch("/api/v1/user/:userID/goals/:goalID/tasks", TaskController.updateMultiple)
         .patch("/api/v1/user/:userID/goals/:goalID/tasks/:taskID", TaskController.update)
         .delete("/api/v1/user/:userID/goals/:goalID/tasks/:taskID", TaskController.delete)
+        .get("/api/v1/user/", UserController.getAll)
 };

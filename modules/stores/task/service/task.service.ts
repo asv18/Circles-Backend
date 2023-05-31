@@ -18,25 +18,24 @@ class TaskService {
 
             //console.log((new Date()).getTime() >= task.next_date.getTime() && task.complete && task.repeat !== 'Never')
 
-            if ((new Date()).getTime() >= task.next_date.getTime() && task.complete && task.repeat !== 'Never')
+            if (next_date.getTime() >= task.next_date.getTime() && task.complete && task.repeat !== 'Never')
             {
                 switch (task.repeat) {
                     case "Daily": {
-                        next_date = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay() + 1)
+                        next_date = new Date(next_date.getFullYear(), next_date.getMonth(), next_date.getDay() + 1)
                         break;
                     }
                     case "Weekly": {
-                        const curr: Date = new Date();
-                        next_date = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
+                        next_date = new Date(next_date.setDate(next_date.getDate() - next_date.getDay() + 6));
                         break;
                     }
                     case "Monthly": {
-                        next_date = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
+                        next_date = new Date(next_date.getFullYear(), next_date.getMonth() + 1, 0)
                         break;
                     }
                 }
 
-                task.next_date = next_date;
+                task.next_date = next_date.toISOString();
                 task.complete = false;
                 taskRepository.update(task);
             }
@@ -94,16 +93,15 @@ class TaskService {
 
         switch (task.repeat) {
             case "Daily": {
-                next_date = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay() + 1)
+                next_date = new Date(next_date.getFullYear(), next_date.getMonth(), next_date.getDay() + 1)
                 break;
             }
             case "Weekly": {
-                const curr: Date = new Date();
-                next_date = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
+                next_date = new Date(next_date.setDate(next_date.getDate() - next_date.getDay() + 6));
                 break;
             }
             case "Monthly": {
-                next_date = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
+                next_date = new Date(next_date.getFullYear(), next_date.getMonth() + 1, 0)
                 break;
             }
         }

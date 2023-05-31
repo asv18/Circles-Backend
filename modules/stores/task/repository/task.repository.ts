@@ -18,7 +18,7 @@ class TaskRepository {
     async update(task: Task): Promise<any> {
         //console.log(`UPDATE "task" SET "name" = '${task.name}', "repeat" = '${task.repeat}', "next_date" = '${task.next_date.toString()}', "complete" = '${task.complete}' WHERE "id" = ${task.id} AND "goal_id" = '${task.goal_id}';`)
 
-        return await database.queryArray(`UPDATE "task" SET "name" = '${task.name}', "repeat" = '${task.repeat}', "next_date" = '${task.next_date.toString()}', "complete" = '${task.complete}' WHERE "id" = ${task.id} AND "goal_id" = '${task.goal_id}';`)
+        return await database.queryArray(`UPDATE "task" SET "name" = '${task.name}', "repeat" = '${task.repeat}', "next_date" = '${task.next_date}', "complete" = '${task.complete}' WHERE "id" = ${task.id} AND "goal_id" = '${task.goal_id}';`)
     }
 
     async delete(id: bigint, goal_id: string): Promise<any> {

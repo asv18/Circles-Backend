@@ -2,6 +2,16 @@
 import userService from "../service/user.service.ts"
 
 class UserController {
+    async getAll(ctx: any): Promise<any> {
+        ctx.response.status = 200;
+        ctx.response.body = {
+            meta: {
+                code: 200,
+                status: "Ok",
+            },
+            data: await userService.getAll()
+        }
+    }
 
     async getByAuth(ctx: any): Promise<any> {
         ctx.response.status = 200;
