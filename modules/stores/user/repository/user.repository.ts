@@ -4,11 +4,17 @@ import User from "../dto/user.dto.ts";
 
 class UserRepository {
     async getAll(): Promise<any> {
-        return await database.queryArray(`SELECT * FROM "user";`)
+        return await database.queryArray(`SELECT * FROM "user" LIMIT 10;`)
     }
 
     async getByAuth(authID: string): Promise<any> {
         return await database.queryArray(`SELECT * FROM "user" WHERE "authID" = '${authID}';`)
+    }
+
+    async getFriendSkeletons(userKey: string): Promise<any> {
+        return await database.queryArray(`SELECT "first_name", "last_name", "username", "email", "user_foreign_key", "photo_url" FROM "friendship" friend 
+            INNER JOIN "user" u ON u.user_foreign_key = friend.user1 OR u.user_foreign_key = friend.user2 
+            WHERE friend.user2 = '${userKey}' OR friend.user1 = '${userKey}';`)
     }
 
     async getByID(uuid: string): Promise<any> {
@@ -16,11 +22,11 @@ class UserRepository {
     }
 
     async create(user: User): Promise<any> {
-        return await database.queryArray(`INSERT INTO "user" ("first_name", "last_name", "username", "password", "email", "registeredAt", "authID") VALUES ('${user.first_name}','${user.last_name}','${user.username}','${user.password}','${user.email}', DATE '${user.registeredAt}', '${user.authID}');`)
+        return await database.queryArray(`INSERT INTO "user" ("first_name", "last_name", "username", "password", "email", "authID", "photo_url") VALUES ('${user.first_name}','${user.last_name}','${user.username}','${user.password}','${user.email}','${user.authID}','${user.photo_url}');`)
     }
 
     async update(user: User): Promise<any> {
-        return await database.queryArray(`UPDATE "user" SET "first_name" = '${user.first_name}', "last_name" = '${user.last_name}', "username" = '${user.username}', "password" = '${user.password}'  WHERE "id" = '${user.id}';`)
+        return await database.queryArray(`UPDATE "user" SET "first_name" = '${user.first_name}', "last_name" = '${user.last_name}', "username" = '${user.username}', "password" = '${user.password}', "photo_url" = '${user.photo_url}'  WHERE "id" = '${user.id}';`)
     }
 
     async delete(id: string): Promise<any> {

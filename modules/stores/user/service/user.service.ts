@@ -18,10 +18,44 @@ class UserService {
                 "first_name": user.first_name,
                 "last_name": user.last_name,
                 "username": user.username,
+                "photo_url": user.photo_url,
+                "email": user.email,
+                "user_foreign_key": user.user_foreign_key,
                 "id": user.id,
             }
 
             users.push(userJson);
+        });
+
+        return users;
+    }
+
+    async getFriendSkeletons(userKey: string): Promise<any> {
+        const data = await userRepository.getFriendSkeletons(userKey)
+
+        let users = new Array<JSON>();
+
+        data.rows.map((a_user: []) => {
+            const user: any = new User();
+
+            data.rowDescription.columns.map((item: any, index: number) => {
+                user[item.name] = a_user[index]
+            });
+
+            //"first_name", "last_name", "username", "email", "user_foreign_key", "photo_url"
+
+            if (userKey !== user.user_foreign_key) {
+                const userJson: JSON = <JSON><any> {
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "username": user.username,
+                    "photo_url": user.photo_url,
+                    "email": user.email,
+                    "user_foreign_key": user.user_foreign_key,
+                }
+    
+                users.push(userJson);
+            }
         });
 
         return users;
@@ -62,8 +96,9 @@ class UserService {
             "username": user.username,
             "email": user.email,
             "registeredAt": user.registeredAt,
-            "password": user.password,
-            "authID": user.authID
+            "authID": user.authID,
+            "user_foreign_key": user.user_foreign_key,
+            "photo_url": user.photo_url,
         }
 
 
@@ -80,6 +115,7 @@ class UserService {
         user.username = body["username"];
         user.email = body["email"];
         user.authID = body["authID"];
+        user.photo_url = body["photo_url"];
 
         user.registeredAt = new Date().toISOString();
 
@@ -97,7 +133,7 @@ class UserService {
         user.username = body["username"];
         user.password = body["password"];
         user.email = body["email"];
-        
+        user.photo_url = body["photo_url"];
 
         return await userRepository.update(user);
     }

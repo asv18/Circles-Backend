@@ -4,7 +4,6 @@ import Task from "../../task/dto/task.dto.ts";
 import taskService from "../../task/service/task.service.ts";
 
 class GoalService {
-
     async getAll(uuid: string): Promise<any> {
         const data = await goalRepository.getAll(uuid)
 
@@ -80,6 +79,7 @@ class GoalService {
     async create(ctx: any) {
         const body = await ctx.request.body().value;
 
+
         let goal: Goal = new Goal();
 
         goal.name = body["name"];
@@ -114,7 +114,7 @@ class GoalService {
 
                 switch (task.repeat) {
                     case "Daily": {
-                        next_date = new Date(next_date.getFullYear(), next_date.getMonth(), next_date.getDay() + 1)
+                        next_date = new Date(next_date.getFullYear(), next_date.getMonth(), next_date.getDate() + 2)
                         break;
                     }
                     case "Weekly": {
@@ -134,9 +134,9 @@ class GoalService {
                 if (tasks.indexOf(element) != tasks.length-1) {
                     insertString += ", "
                 }
-
             });
         }
+
 
         return await goalRepository.createTasks(insertString);
     }

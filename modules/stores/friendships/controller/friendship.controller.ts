@@ -1,53 +1,40 @@
+import friendshipService from "../service/friendship.service.ts";
 
-import userService from "../service/user.service.ts"
-
-class UserController {
-    async getAll(ctx: any): Promise<any> {
+class FriendshipController {
+    async getFriendshipsOfUser(ctx: any): Promise<any> {
         ctx.response.status = 200;
         ctx.response.body = {
             meta: {
                 code: 200,
                 status: "Ok",
             },
-            data: await userService.getAll()
+            data: await friendshipService.getFriendshipsOfUser(ctx.params.userKey)
         }
     }
-
-    async getFriendSkeletons(ctx: any): Promise<any> {
+    async getFriendshipRequestsOfUser(ctx: any): Promise<any> {
         ctx.response.status = 200;
         ctx.response.body = {
             meta: {
                 code: 200,
                 status: "Ok",
             },
-            data: await userService.getFriendSkeletons(ctx.params.userKey)
+            data: await friendshipService.getFriendshipRequestsOfUser(ctx.params.userKey)
         }
     }
 
-    async getByAuth(ctx: any): Promise<any> {
+    async getFriendship(ctx: any): Promise<any> {
         ctx.response.status = 200;
         ctx.response.body = {
             meta: {
                 code: 200,
                 status: "Ok",
             },
-            data: await userService.getByAuth(ctx.params.authID)
+            data: await friendshipService.getFriendship(ctx.params.userKey1, ctx.params.userKey2)
         }
     }
 
-    async getByID(ctx: any): Promise<any> {
-        ctx.response.status = 200;
-        ctx.response.body = {
-            meta: {
-                code: 200,
-                status: "Ok",
-            },
-            data: await userService.getByID(ctx.params.id)
-        }
-    }
-
-    async create(ctx: any): Promise<any> {
-        await userService.create(ctx);
+    async createRequest(ctx: any): Promise<any> {
+        await friendshipService.createRequest(ctx);
 
         ctx.response.status = 201;
         ctx.response.body = {
@@ -58,8 +45,8 @@ class UserController {
         }
     }
 
-    async update(ctx: any): Promise<any> {
-        await userService.update(ctx);
+    async updateFriendship(ctx: any): Promise<any> {
+        await friendshipService.updateFriendship(ctx);
 
         ctx.response.status = 200;
         ctx.response.body = {
@@ -71,7 +58,7 @@ class UserController {
     }
 
     async delete(ctx: any): Promise<any> {
-        await userService.delete(ctx.params.id);
+        await friendshipService.delete(ctx.params.id);
 
         ctx.response.status = 200;
         ctx.response.body = {
@@ -83,4 +70,4 @@ class UserController {
     }
 }
 
-export default new UserController();
+export default new FriendshipController()

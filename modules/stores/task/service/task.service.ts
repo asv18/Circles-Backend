@@ -93,7 +93,7 @@ class TaskService {
 
         switch (task.repeat) {
             case "Daily": {
-                next_date = new Date(next_date.getFullYear(), next_date.getMonth(), next_date.getDay() + 1)
+                next_date = new Date(next_date.getFullYear(), next_date.getMonth(), next_date.getDate() + 2);
                 break;
             }
             case "Weekly": {
@@ -101,7 +101,7 @@ class TaskService {
                 break;
             }
             case "Monthly": {
-                next_date = new Date(next_date.getFullYear(), next_date.getMonth() + 1, 0)
+                next_date = new Date(next_date.getFullYear(), next_date.getMonth() + 1, 0);
                 break;
             }
         }
@@ -145,8 +145,9 @@ class TaskService {
         task.name = body["name"];
         task.repeat = body["repeat"];
 
-        task.next_date = body["next_date"];
         task.complete = body["complete"];
+
+        task.next_date = body["next_date"];
 
         return await taskRepository.update(task);
     }

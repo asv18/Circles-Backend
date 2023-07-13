@@ -8,5 +8,7 @@ export default class User {
     password?: string;
     email?: string;
     mobile?: string;
+    photo_url?: string;
     registeredAt?: string;
+    user_foreign_key?: string;
 }
