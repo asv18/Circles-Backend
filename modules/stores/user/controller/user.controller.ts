@@ -9,7 +9,7 @@ class UserController {
                 code: 200,
                 status: "Ok",
             },
-            data: await userService.getAll()
+            data: await userService.getAll(ctx.request.url.searchParams.get('query').toString().replace('"', ''))
         }
     }
 

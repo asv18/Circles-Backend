@@ -2,8 +2,8 @@ import userRepository from "../repository/user.repository.ts";
 import User from "../dto/user.dto.ts";
 
 class UserService {
-    async getAll(): Promise<any> {
-        const data = await userRepository.getAll()
+    async getAll(query: string): Promise<any> {
+        const data = await userRepository.getAll(query)
 
         let users = new Array<JSON>();
 

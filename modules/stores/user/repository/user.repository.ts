@@ -3,8 +3,10 @@ import database from "../../../../database.ts";
 import User from "../dto/user.dto.ts";
 
 class UserRepository {
-    async getAll(): Promise<any> {
-        return await database.queryArray(`SELECT * FROM "user" LIMIT 10;`)
+    async getAll(query: string): Promise<any> {
+        query = `LOWER('${query}')`
+
+        return await database.queryArray(`SELECT "first_name","last_name","username","photo_url","email","user_foreign_key","id" FROM "user" WHERE (LOWER("first_name") ~ ${query} OR LOWER("last_name") ~ ${query}) LIMIT 10;`)
     }
 
     async getByAuth(authID: string): Promise<any> {
