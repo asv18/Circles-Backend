@@ -1,16 +1,19 @@
-import database from "../../../../database.ts";
+import database from "../../../../../database.ts";
 import Friendship from "../dto/friendship.dto.ts";
 class FriendshipRepository {
     async getFriendshipsOfUser(foreignKey: string): Promise<any> {
-        return await database.queryArray(`SELECT * FROM "friendship" WHERE ("user1"='${foreignKey}' OR "user2"='${foreignKey}') AND "relationship"='friends';`)
+    
+        return await database.queryArray(`
+            SELECT "id", "user1", "user2", "relationship", "date_created", CAST("last_interacted_date" AS STRING) FROM "friendship" WHERE ("user1"='${foreignKey}' OR "user2"='${foreignKey}') AND "relationship"='friends' ORDER BY "last_interacted_date";
+        `)
     }
 
     async getFriendshipRequestsOfUser(foreignKey: string): Promise<any> {
-        return await database.queryArray(`SELECT * FROM "friendship" WHERE ("user1"='${foreignKey}' OR "user2"='${foreignKey}') AND "relationship"='request';`)
+        return await database.queryArray(`SELECT "id", "user1", "user2", "relationship", "date_created", CAST("last_interacted_date" AS STRING) FROM "friendship" WHERE ("user1"='${foreignKey}' OR "user2"='${foreignKey}') AND "relationship"='request';`)
     }
 
     async getFriendship(foreignKey1: string, foreignKey2: string): Promise<any> {
-        return await database.queryArray(`SELECT * FROM "friendship" WHERE "user1"='${foreignKey1}' AND "user2"='${foreignKey2}';`)
+        return await database.queryArray(`SELECT "id", "user1", "user2", "relationship", "date_created", CAST("last_interacted_date" AS STRING) FROM "friendship" WHERE ("user1"='${foreignKey1}' AND "user2"='${foreignKey2}') OR ("user2"='${foreignKey1}' AND "user1"='${foreignKey2}');`)
     }
 
     async createRequest(friendship: Friendship): Promise<any> {

@@ -1,5 +1,5 @@
 //define all actions to be performed in database
-import database from "../../../../database.ts";
+import database from "../../../../../database.ts";
 import Task from "../dto/task.dto.ts";
 
 class TaskRepository {

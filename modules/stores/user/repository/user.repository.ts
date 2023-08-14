@@ -6,17 +6,19 @@ class UserRepository {
     async getAll(query: string): Promise<any> {
         query = `LOWER('${query}')`
 
-        return await database.queryArray(`SELECT "first_name","last_name","username","photo_url","email","user_foreign_key","id" FROM "user" WHERE (LOWER("first_name") ~ ${query} OR LOWER("last_name") ~ ${query}) LIMIT 10;`)
+        return await database.queryArray(`
+            SELECT "first_name","last_name","username","photo_url","email","user_foreign_key" FROM "user" WHERE (LOWER("first_name") ~ ${query} OR LOWER("last_name") ~ ${query}) LIMIT 10;
+        `)
     }
 
     async getByAuth(authID: string): Promise<any> {
-        return await database.queryArray(`SELECT * FROM "user" WHERE "authID" = '${authID}';`)
+        return await database.queryArray(`SELECT "id" FROM "user" WHERE "authID" = '${authID}';`)
     }
 
     async getFriendSkeletons(userKey: string): Promise<any> {
         return await database.queryArray(`SELECT "first_name", "last_name", "username", "email", "user_foreign_key", "photo_url" FROM "friendship" friend 
             INNER JOIN "user" u ON u.user_foreign_key = friend.user1 OR u.user_foreign_key = friend.user2 
-            WHERE friend.user2 = '${userKey}' OR friend.user1 = '${userKey}';`)
+            WHERE friend.user2 = '${userKey}' OR friend.user1 = '${userKey}' ORDER BY "last_interacted_date" ASC;`)
     }
 
     async getByID(uuid: string): Promise<any> {

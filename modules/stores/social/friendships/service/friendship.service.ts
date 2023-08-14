@@ -68,7 +68,7 @@ class FriendShipService {
         });
 
         const friendshipJSON: JSON = <JSON><any> {
-            "id": friendship.id,
+            "id": friendship.id.toString(),
             "user1": friendship.user1,
             "user2": friendship.user2,
             "relationship": friendship.relationship,

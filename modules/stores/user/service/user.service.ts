@@ -19,9 +19,7 @@ class UserService {
                 "last_name": user.last_name,
                 "username": user.username,
                 "photo_url": user.photo_url,
-                "email": user.email,
                 "user_foreign_key": user.user_foreign_key,
-                "id": user.id,
             }
 
             users.push(userJson);
