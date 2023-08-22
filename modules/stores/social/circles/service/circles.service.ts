@@ -1,5 +1,5 @@
 import User from "../../../user/dto/user.dto.ts";
-import Circle_Connection from "../dto/circle_connection.dto.ts";
+import CircleConnection from "../dto/circle_connection.dto.ts";
 import Circle from "../dto/circles.dto.ts";
 import circlesRepository from "../repository/circles.repository.ts";
 
@@ -49,6 +49,34 @@ class CirclesService {
         return circles;
     }
 
+    async getCircleById(circleID: string): Promise<any> {
+        const data = await circlesRepository.getCircleById(circleID);
+
+        const circle: any = new Circle();
+
+        data.rows.map((a_circle: []) => {
+            data.rowDescription.columns.map((item: any, index: number) => {
+                circle[item.name] = a_circle[index]
+            });
+        });
+
+        const users = await this.getUsersOfCircle(circleID);
+
+        const circleJSON: JSON = <JSON><any> {
+            "id": circle.id,
+            "created_at": circle.created_at,
+            "last_interacted_date": circle.last_interacted_date,
+            "circle_name": circle.circle_name,
+            "image": circle.image,
+            "created_by": circle.created_by,
+            "admin": circle.admin,
+            "users": users,
+        }
+        
+
+        return circleJSON;
+    }
+
     async getUsersOfCircle(circle_id: string): Promise<any> {
         const data = await circlesRepository.getUsersOfCircle(circle_id);
 
@@ -76,7 +104,7 @@ class CirclesService {
     }
 
     async createCircleConnection(circle_id: string, user_fkey: string): Promise<any> {
-        let circle_connection: Circle_Connection = new Circle_Connection();
+        let circle_connection: CircleConnection = new CircleConnection();
 
         circle_connection.circle_id = circle_id;
         circle_connection.user_fkey = user_fkey;
@@ -95,6 +123,10 @@ class CirclesService {
         circle.admin = body["user_creator"];
 
         return await circlesRepository.createCircle(circle);
+    }
+
+    async deleteCircle(id: string): Promise<any> {
+        return await circlesRepository.deleteCircle(id);
     }
 }
 

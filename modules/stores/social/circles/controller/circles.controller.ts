@@ -11,6 +11,17 @@ class CirclesController {
             data: await circlesService.getCirclesOfUser(ctx.params.userKey)
         }
     }
+    
+    async getCircleById(ctx: any): Promise<any> {
+        ctx.response.status = 200;
+        ctx.response.body = {
+            meta: {
+                code: 200,
+                status: "Ok",
+            },
+            data: await circlesService.getCircleById(ctx.params.circleID)
+        }
+    }
 
     async getUsersOfCircle(ctx: any): Promise<any> {
         ctx.response.status = 200;
@@ -43,6 +54,18 @@ class CirclesController {
             meta: {
                 code: 201,
                 status: "Created",
+            }
+        }
+    }
+
+    async deleteCircle(ctx: any): Promise<any> {
+        await circlesService.deleteCircle(ctx.params.id);
+
+        ctx.response.status = 200;
+        ctx.response.body = {
+            meta: {
+                code: 200,
+                status: "Ok",
             }
         }
     }

@@ -1,5 +1,5 @@
 import database from "../../../../../database.ts";
-import Circle_Connection from "../dto/circle_connection.dto.ts";
+import CircleConnection from "../dto/circle_connection.dto.ts";
 import Circle from "../dto/circles.dto.ts";
 
 class CirclesRepository {
@@ -10,6 +10,12 @@ class CirclesRepository {
         `);
     }
 
+    async getCircleById(circleID: string): Promise<any> {
+        return await database.queryArray(`
+            SELECT * FROM "circle" WHERE "id"='${circleID}';
+        `);
+    }
+
     async getUsersOfCircle(circleID: string): Promise<any> {
         return await database.queryArray(`
             SELECT "first_name","last_name","username","photo_url","email","user_foreign_key" FROM "circle_connection" circle_connection INNER JOIN "user" u 
@@ -17,7 +23,7 @@ class CirclesRepository {
         `);
     }
 
-    async createCircleConnection(circle_connection: Circle_Connection): Promise<any> {
+    async createCircleConnection(circle_connection: CircleConnection): Promise<any> {
         return await database.queryArray(`
             INSERT INTO "circle_connection" ("circle_id", "user_fkey") VALUES ('${circle_connection.circle_id}','${circle_connection.user_fkey}'); 
         `);
@@ -27,6 +33,12 @@ class CirclesRepository {
         return await database.queryArray(`
             WITH "x" AS (INSERT INTO "circle" ("circle_name", "image", "created_by", "admin") VALUES ('${circle.circle_name}','${circle.image}','${circle.created_by}','${circle.admin}') RETURNING "id")
             INSERT INTO "circle_connection" ("circle_id", "user_fkey") VALUES ((SELECT "id" FROM "x"),'${circle.created_by}'); 
+        `);
+    }
+
+    async deleteCircle(id: string): Promise<any> {
+        return await database.queryArray(`
+            DELETE FROM "circle" WHERE "id"=${id};
         `);
     }
 }

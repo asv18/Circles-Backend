@@ -1,4 +1,4 @@
-export default class Circle_Connection {
+export default class CircleConnection {
     circle_id?: string;
     user_fkey?: string;
     joined?: string;

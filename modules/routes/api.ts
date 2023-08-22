@@ -5,6 +5,7 @@ import FriendshipController from "../stores/social/friendships/controller/friend
 import MessageController from "../stores/social/message/controller/message.controller.ts";
 import messageService from "../stores/social/message/service/message.service.ts";
 import CirclesController from "../stores/social/circles/controller/circles.controller.ts";
+import CirclePostsController from "../stores/social/circle_posts/controller/circle_posts.controller.ts";
 
 export const api = (router: any) => {
     const sockets = new Map<string, [WebSocket, string]>();
@@ -80,8 +81,15 @@ export const api = (router: any) => {
         })
         .get("/api/v1/messages/:friendshipID/:offset/", MessageController.getAll)
         .post("/api/v1/messages/:friendshipID/", MessageController.create)
-        .get("/api/v1/circles/:userKey/", CirclesController.getCirclesOfUser)
+        .get("/api/v1/user/:userKey/circles/", CirclesController.getCirclesOfUser)
+        .get("/api/v1/user/:userKey/posts/", CirclePostsController.getUserPosts)
+        .get("/api/v1/circles/:circleID/", CirclesController.getCircleById)
+        .delete("/api/v1/circles/:circleID/", CirclesController.deleteCircle)
         .get("/api/v1/circles/:circleID/users/", CirclesController.getUsersOfCircle)
         .post("/api/v1/circles/:circleID/users/:userKey/", CirclesController.createCircleConnection)
         .post("/api/v1/circles/", CirclesController.createCircle)
+        .get("/api/v1/circles/:circleID/posts/", CirclePostsController.getCirclePosts)
+        .post("/api/v1/user/:userID/posts/", CirclePostsController.createCirclePost)
+        .delete("/api/v1/circles/:circleID/posts/:circlepostID/", CirclePostsController.deleteCirclePost)
+        .patch("/api/v1/circles/:circleID/posts/:circlepostID/", CirclePostsController.updateCirclePost)
 };
