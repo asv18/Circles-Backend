@@ -13,7 +13,8 @@ class FriendshipRepository {
     }
 
     async getFriendship(foreignKey1: string, foreignKey2: string): Promise<any> {
-        return await database.queryArray(`SELECT "id", "user1", "user2", "relationship", "date_created", CAST("last_interacted_date" AS STRING) FROM "friendship" WHERE ("user1"='${foreignKey1}' AND "user2"='${foreignKey2}') OR ("user2"='${foreignKey1}' AND "user1"='${foreignKey2}');`)
+        return await database.queryArray(`SELECT "id", "user1", "user2", "relationship", CAST("date_created" AS STRING), CAST("last_interacted_date" AS STRING)
+        FROM "friendship" WHERE ("user1"='${foreignKey1}' AND "user2"='${foreignKey2}') OR ("user2"='${foreignKey1}' AND "user1"='${foreignKey2}');`)
     }
 
     async createRequest(friendship: Friendship): Promise<any> {

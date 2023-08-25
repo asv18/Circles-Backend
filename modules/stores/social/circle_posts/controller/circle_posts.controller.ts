@@ -8,7 +8,7 @@ class CirclePostsController {
                 code: 200,
                 status: "Ok",
             },
-            data: await circlePostsService.getCirclePosts(ctx.params.circleID)
+            data: await circlePostsService.getCirclePosts(ctx)
         }
     }
 
@@ -25,7 +25,7 @@ class CirclePostsController {
     }
 
     async deleteCirclePost(ctx: any): Promise<any> {
-        await circlePostsService.deleteCirclePost(ctx.params.circlepostID)
+        await circlePostsService.deleteCirclePost(ctx)
 
         ctx.response.status = 200;
         ctx.response.body = {
@@ -43,7 +43,7 @@ class CirclePostsController {
                 code: 200,
                 status: "Ok",
             },
-            data: await circlePostsService.getUserPosts(ctx.params.userKey)
+            data: await circlePostsService.getUserPosts(ctx)
         }
     }
 

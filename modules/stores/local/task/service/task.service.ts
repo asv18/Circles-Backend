@@ -1,10 +1,12 @@
 import taskRepository from "../repository/task.repository.ts";
 import Task from "../dto/task.dto.ts";
+import database from "../../../../../database.ts";
+import { isTemplateString } from "https://deno.land/x/postgres@v0.17.0/utils/utils.ts";
 
 class TaskService {
 
-    async getAll(goal_id: string): Promise<any> {
-        const data = await taskRepository.getAll(goal_id)
+    async getAll(goalID: string, userID: string): Promise<any> {
+        const data = await taskRepository.getAll(goalID, userID)
         const tasks = new Array<JSON>();
 
         data.rows.map((a_task: []) => {
@@ -37,7 +39,7 @@ class TaskService {
 
                 task.next_date = next_date.toISOString();
                 task.complete = false;
-                taskRepository.update(task);
+                taskRepository.update(task, userID);
             }
 
             const taskJSON: JSON = <JSON><any> {
@@ -56,8 +58,8 @@ class TaskService {
         return tasks;
     }
 
-    async getByID(id: bigint, goal_id: string): Promise<any> {
-        const data = await taskRepository.getByID(id, goal_id)
+    async getByID(id: bigint, goal_id: string, user_id: string): Promise<any> {
+        const data = await taskRepository.getByID(id, goal_id, user_id)
         const task: any = new Task();
 
         data.rows.map((a_task: []) => {
@@ -106,9 +108,24 @@ class TaskService {
             }
         }
 
-        task.next_date = next_date.toISOString()
+        task.next_date = next_date.toISOString();
 
-        return await taskRepository.create(task);
+        const exists_rows = await taskRepository.checkIfGoalExists(body["user_id"], ctx.params.goalID);
+
+        let exists = false;
+
+        exists_rows.rows.map((exists_obj: []) => {
+            exists_rows.rowDescription.columns.map((item: any, index: number) => {
+                exists = exists_obj[index];
+            });
+        });
+
+        if (exists) {
+            return await taskRepository.create(task);
+        }
+        else {
+            throw Error();
+        }
     }
 
     async updateMultiple(ctx: any): Promise<any> {
@@ -129,7 +146,7 @@ class TaskService {
             task.next_date = body[i]["next_date"];
             task.complete = body[i]["complete"];
 
-            response = await taskRepository.update(task);
+            response = await taskRepository.update(task, body["user_id"]);
         }
 
         return response;
@@ -149,11 +166,11 @@ class TaskService {
 
         task.next_date = body["next_date"];
 
-        return await taskRepository.update(task);
+        return await taskRepository.update(task, body["user_id"]);
     }
 
-    async delete(id: bigint, goal_id: string): Promise<any> {
-        return await taskRepository.delete(id, goal_id);
+    async delete(id: bigint, goal_id: string, user_id: string): Promise<any> {
+        return await taskRepository.delete(id, goal_id, user_id);
     }
 }
 

@@ -1,11 +1,14 @@
+import { Context } from "https://deno.land/x/oak/mod.ts";
 import User from "../../../user/dto/user.dto.ts";
 import CircleConnection from "../dto/circle_connection.dto.ts";
 import Circle from "../dto/circles.dto.ts";
 import circlesRepository from "../repository/circles.repository.ts";
 
 class CirclesService {
-    async getCirclesOfUser(userKey: string): Promise<any> {
-        const data = await circlesRepository.getCirclesOfUser(userKey);
+    async getCirclesOfUser(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const data = await circlesRepository.getCirclesOfUser(body["user_fkey"]);
 
         let circles = new Array<JSON>();
 
@@ -49,8 +52,10 @@ class CirclesService {
         return circles;
     }
 
-    async getCircleById(circleID: string): Promise<any> {
-        const data = await circlesRepository.getCircleById(circleID);
+    async getCircleById(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const data = await circlesRepository.getCircleById(body["circle_id"]);
 
         const circle: any = new Circle();
 
@@ -60,7 +65,7 @@ class CirclesService {
             });
         });
 
-        const users = await this.getUsersOfCircle(circleID);
+        const users = await this.getUsersOfCircle(body["circle_id"]);
 
         const circleJSON: JSON = <JSON><any> {
             "id": circle.id,
@@ -103,11 +108,13 @@ class CirclesService {
         return users;
     }
 
-    async createCircleConnection(circle_id: string, user_fkey: string): Promise<any> {
+    async createCircleConnection(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
         let circle_connection: CircleConnection = new CircleConnection();
 
-        circle_connection.circle_id = circle_id;
-        circle_connection.user_fkey = user_fkey;
+        circle_connection.circle_id = body["circle_id"];
+        circle_connection.user_fkey = body["user_fkey"];
 
         return await circlesRepository.createCircleConnection(circle_connection);
     }
@@ -125,8 +132,10 @@ class CirclesService {
         return await circlesRepository.createCircle(circle);
     }
 
-    async deleteCircle(id: string): Promise<any> {
-        return await circlesRepository.deleteCircle(id);
+    async deleteCircle(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        return await circlesRepository.deleteCircle(body["circle_id"]);
     }
 }
 

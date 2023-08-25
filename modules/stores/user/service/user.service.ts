@@ -59,8 +59,9 @@ class UserService {
         return users;
     }
 
-    async getByAuth(password: string): Promise<any> {
-        const data = await userRepository.getByAuth(password);
+    async getByAuth(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+        const data = await userRepository.getByAuth(body["auth_id"]);
         let user: any = new User();
 
         data.rows.map((dataUser: []) => {
@@ -77,8 +78,9 @@ class UserService {
         return userJSON;
     }
 
-    async getByID(id: string): Promise<any> {
-        const data = await userRepository.getByID(id);
+    async getByID(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+        const data = await userRepository.getByID(body["id"]);
         let user: any = new User();
 
         data.rows.map((dataUser: []) => {
@@ -125,7 +127,7 @@ class UserService {
         
         let user = new User();
         
-        user.id = ctx.params.id
+        user.id = body["id"];
         user.first_name = body["first_name"];
         user.last_name = body["last_name"];
         user.username = body["username"];
@@ -136,8 +138,10 @@ class UserService {
         return await userRepository.update(user);
     }
 
-    async delete(id: string): Promise<any> {
-        return await userRepository.delete(id);
+    async delete(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        return await userRepository.delete(body["id"]);
     }
 
 }

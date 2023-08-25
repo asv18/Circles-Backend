@@ -8,7 +8,7 @@ class CirclesController {
                 code: 200,
                 status: "Ok",
             },
-            data: await circlesService.getCirclesOfUser(ctx.params.userKey)
+            data: await circlesService.getCirclesOfUser(ctx)
         }
     }
     
@@ -19,23 +19,25 @@ class CirclesController {
                 code: 200,
                 status: "Ok",
             },
-            data: await circlesService.getCircleById(ctx.params.circleID)
+            data: await circlesService.getCircleById(ctx)
         }
     }
 
     async getUsersOfCircle(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
         ctx.response.status = 200;
         ctx.response.body = {
             meta: {
                 code: 200,
                 status: "Ok",
             },
-            data: await circlesService.getUsersOfCircle(ctx.params.circleID)
+            data: await circlesService.getUsersOfCircle(body["circle_id"])
         }
     }
 
     async createCircleConnection(ctx: any): Promise<any> {
-        await circlesService.createCircleConnection(ctx.params.circleID, ctx.params.userKey)
+        await circlesService.createCircleConnection(ctx)
 
         ctx.response.status = 201;
         ctx.response.body = {
@@ -59,7 +61,7 @@ class CirclesController {
     }
 
     async deleteCircle(ctx: any): Promise<any> {
-        await circlesService.deleteCircle(ctx.params.id);
+        await circlesService.deleteCircle(ctx);
 
         ctx.response.status = 200;
         ctx.response.body = {

@@ -4,8 +4,9 @@ import Task from "../../task/dto/task.dto.ts";
 import taskService from "../../task/service/task.service.ts";
 
 class GoalService {
-    async getAll(uuid: string): Promise<any> {
-        const data = await goalRepository.getAll(uuid)
+    async getAll(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+        const data = await goalRepository.getAll(body["id"])
 
         let goals = new Array<JSON>();
 
@@ -23,14 +24,13 @@ class GoalService {
                 "finish_date": goal.finish_date,
                 "progress": goal.progress.toString(),
                 "description": goal.description,
-                "owner": goal.owner,
             }
 
             goals.push(goalJSON);
         });
 
         for (let i = 0; i < goals.length; i++) {
-            const tasks = await taskService.getAll(goals[i]["id" as keyof typeof goals[typeof i]].toString());
+            const tasks = await taskService.getAll(goals[i]["id" as keyof typeof goals[typeof i]].toString(), body["id"]);
 
             const goal: JSON = <JSON><any> {
                 "id": goals[i]["id" as keyof typeof goals[typeof i]],
@@ -39,7 +39,6 @@ class GoalService {
                 "finish_date": goals[i]["finish_date" as keyof typeof goals[typeof i]],
                 "progress": goals[i]["progress" as keyof typeof goals[typeof i]].toString(),
                 "description": goals[i]["description" as keyof typeof goals[typeof i]],
-                "owner": goals[i]["owner" as keyof typeof goals[typeof i]],
                 "tasks": tasks
             }
 
@@ -49,8 +48,9 @@ class GoalService {
         return goals;
     }
 
-    async getByID(id: string, uuid: string): Promise<any> {
-        const data = await goalRepository.getByID(id, uuid)
+    async getByID(ctx: any): Promise<any> {
+        const body = ctx.request.body().value;
+        const data = await goalRepository.getByID(ctx.params.id, body["id"])
         const goal: any = new Goal();
 
         data.rows.map((a_goal: []) => {
@@ -59,7 +59,7 @@ class GoalService {
             });
         });
 
-        const tasks = await taskService.getAll(goal.id);
+        const tasks = await taskService.getAll(goal.id, goal.owner);
 
         const goalJSON: JSON = <JSON><any> {
             "id": goal.id,
@@ -68,7 +68,6 @@ class GoalService {
             "finish_date": goal.finish_date,
             "progress": goal.progress.toString(),
             "description": goal.description,
-            "owner": goal.owner,
             "tasks": tasks
         }
         
@@ -79,13 +78,12 @@ class GoalService {
     async create(ctx: any) {
         const body = await ctx.request.body().value;
 
-
         let goal: Goal = new Goal();
 
         goal.name = body["name"];
         goal.finish_date = body["finish_date"];
         goal.description = body["description"];
-        goal.owner = ctx.params.userID;
+        goal.owner = body["user_id"];
 
         const tasks: Array<any> = JSON.parse(body["tasks"]);
 
@@ -146,8 +144,8 @@ class GoalService {
         
         let goal = new Goal();
         
-        goal.id = ctx.params.id
-        goal.owner = ctx.params.userID
+        goal.id = ctx.params.id;
+        goal.owner = body["user_id"];
         goal.name = body["name"];
         goal.finish_date = body["finish_date"];
         goal.progress = body["progress"];
@@ -156,8 +154,9 @@ class GoalService {
         return await goalRepository.update(goal);
     }
 
-    async delete(id: string, uuid: string): Promise<any> {
-        return await goalRepository.delete(id, uuid);
+    async delete(ctx: any): Promise<any> {
+        const body = ctx.request.body().value;
+        return await goalRepository.delete(ctx.params.id, body["user_id"]);
     }
 }
 

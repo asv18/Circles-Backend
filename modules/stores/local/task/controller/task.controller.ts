@@ -1,25 +1,30 @@
+import { CHAR_DOT } from "https://deno.land/std@0.160.0/path/_constants.ts";
 import taskService from "../service/task.service.ts";
 
 class TaskController {
     async getAll(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
         ctx.response.status = 200;
         ctx.response.body = {
             meta: {
                 code: 200,
                 status: "Ok",
             },
-            data: await taskService.getAll(ctx.params.goalID)
+            data: await taskService.getAll(ctx.params.goalID, body["user_id"])
         }
     }
 
     async getByID(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+        
         ctx.response.status = 200;
         ctx.response.body = {
             meta: {
                 code: 200,
                 status: "Ok",
             },
-            data: await taskService.getByID(ctx.params.taskID, ctx.params.goalID)
+            data: await taskService.getByID(ctx.params.taskID, ctx.params.goalID, body["user_id"])
         }
     }
 
@@ -60,7 +65,8 @@ class TaskController {
     }
 
     async delete(ctx: any): Promise<any> {
-        await taskService.delete(ctx.params.taskID, ctx.params.goalID);
+        const body = await ctx.request.body().value;
+        await taskService.delete(ctx.params.taskID, ctx.params.goalID, body["user_id"]);
 
         ctx.response.status = 200;
         ctx.response.body = {

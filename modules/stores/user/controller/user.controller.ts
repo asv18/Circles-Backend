@@ -14,13 +14,14 @@ class UserController {
     }
 
     async getFriendSkeletons(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
         ctx.response.status = 200;
         ctx.response.body = {
             meta: {
                 code: 200,
                 status: "Ok",
             },
-            data: await userService.getFriendSkeletons(ctx.params.userKey)
+            data: await userService.getFriendSkeletons(body["user_fkey"])
         }
     }
 
@@ -31,7 +32,7 @@ class UserController {
                 code: 200,
                 status: "Ok",
             },
-            data: await userService.getByAuth(ctx.params.authID)
+            data: await userService.getByAuth(ctx)
         }
     }
 
@@ -42,7 +43,7 @@ class UserController {
                 code: 200,
                 status: "Ok",
             },
-            data: await userService.getByID(ctx.params.id)
+            data: await userService.getByID(ctx)
         }
     }
 
@@ -71,7 +72,7 @@ class UserController {
     }
 
     async delete(ctx: any): Promise<any> {
-        await userService.delete(ctx.params.id);
+        await userService.delete(ctx);
 
         ctx.response.status = 200;
         ctx.response.body = {

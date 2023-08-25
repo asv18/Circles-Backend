@@ -1,14 +1,14 @@
 import messageService from "../service/message.service.ts";
 
 class MessageController {
-    async getAll(ctx: any): Promise<any> {
+    async getAll(ctx: any): Promise<any> {        
         ctx.response.status = 200;
         ctx.response.body = {
             meta: {
                 code: 200,
                 status: "Ok",
             },
-            data: await messageService.getChunk(ctx.params.friendshipID, ctx.params.offset)
+            data: await messageService.getChunk(ctx)
         }
     }
 

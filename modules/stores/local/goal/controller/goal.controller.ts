@@ -8,7 +8,7 @@ class GoalController {
                 code: 200,
                 status: "Ok",
             },
-            data: await goalService.getAll(ctx.params.userID)
+            data: await goalService.getAll(ctx)
         }
     }
 
@@ -19,7 +19,7 @@ class GoalController {
                 code: 200,
                 status: "Ok",
             },
-            data: await goalService.getByID(ctx.params.id, ctx.params.userID)
+            data: await goalService.getByID(ctx)
         }
     }
 
@@ -48,7 +48,7 @@ class GoalController {
     }
 
     async delete(ctx: any): Promise<any> {
-        await goalService.delete(ctx.params.id, ctx.params.userID);
+        await goalService.delete(ctx);
 
         ctx.response.status = 200;
         ctx.response.body = {

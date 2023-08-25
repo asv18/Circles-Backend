@@ -2,8 +2,10 @@ import Message from "../dto/message.dto.ts";
 import messageRepository from "../repository/message.repository.ts";
 
 class MessageService {
-    async getChunk(friendshipID: string, offset: bigint): Promise<any> {
-        const data = await messageRepository.getChunk(friendshipID, offset)
+    async getChunk(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const data = await messageRepository.getChunk(body["friendship_id"], ctx.params.offset)
 
         let messages = new Array<JSON>();
 
@@ -30,7 +32,7 @@ class MessageService {
     }
 
     async createFromSocket(json: any): Promise<any> {
-        const body = JSON.parse(json);
+        const body = json;
 
         let message: Message = new Message();
 

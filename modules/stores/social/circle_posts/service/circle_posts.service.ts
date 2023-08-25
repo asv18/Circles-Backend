@@ -1,10 +1,13 @@
+import { Context } from "https://deno.land/x/oak/mod.ts";
 import CirclePostConnection from "../dto/circle_post_connection.dto.ts";
 import CirclePost from "../dto/circle_posts.dto.ts";
 import circlePostsRepository from "../repository/circle_posts.repository.ts";
 
 class CirclePostsService {
-    async getCirclePosts(circle_id: string): Promise<any> {
-        const data = await circlePostsRepository.getCirclePosts(circle_id);
+    async getCirclePosts(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const data = await circlePostsRepository.getCirclePosts(body["circle_id"]);
         let circlePosts = new Array<JSON>();
 
         data.rows.map((a_post: []) => {
@@ -64,8 +67,10 @@ class CirclePostsService {
         });
     }
 
-    async getUserPosts(userKey: string) {
-        const data = await circlePostsRepository.getUserPosts(userKey);
+    async getUserPosts(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const data = await circlePostsRepository.getUserPosts(body["user_fkey"]);
         let userPosts = new Array<JSON>();
 
         data.rows.map((a_post: []) => {
@@ -115,8 +120,10 @@ class CirclePostsService {
         */
     }
 
-    async deleteCirclePost(circlepost_id: string): Promise<any> {
-        return await circlePostsRepository.deleteCirclePost(circlepost_id);
+    async deleteCirclePost(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        return await circlePostsRepository.deleteCirclePost(ctx.params.circlepostID, body["circle_id"]);
     }
 }
 

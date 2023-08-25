@@ -11,31 +11,31 @@ export const api = (router: any) => {
     const sockets = new Map<string, [WebSocket, string]>();
 
     router
-        .get("/api/v1/user/authenticate/:authID/", UserController.getByAuth)
-        .get("/api/v1/user/:id/", UserController.getByID)
-        .post("/api/v1/user/", UserController.create)
-        .patch("/api/v1/user/:id/", UserController.update)
-        .delete("/api/v1/user/:id/", UserController.delete)
-        .get("/api/v1/user/:userID/goals/", GoalController.getAll)
-        .get("/api/v1/user/:userID/goals/:id/", GoalController.getByID)
-        .post("/api/v1/user/:userID/goals/", GoalController.create)
-        .patch("/api/v1/user/:userID/goals/:id/", GoalController.update)
-        .delete("/api/v1/user/:userID/goals/:id/", GoalController.delete)
-        .get("/api/v1/user/:userID/goals/:goalID/tasks/", TaskController.getAll)
-        .get("/api/v1/user/:userID/goals/:goalID/tasks/:taskID/", TaskController.getByID)
-        .post("/api/v1/user/:userID/goals/:goalID/tasks/", TaskController.create)
+        .post("/api/v1/user/authenticate/", UserController.getByAuth)
+        .post("/api/v1/user/", UserController.getByID)
+        .post("/api/v1/user/new/", UserController.create)
+        .patch("/api/v1/user/", UserController.update)
+        .delete("/api/v1/user/", UserController.delete)
+        .post("/api/v1/user/goals/", GoalController.getAll)
+        .post("/api/v1/user/goals/:id/", GoalController.getByID)
+        .post("/api/v1/user/goals/new/", GoalController.create)
+        .patch("/api/v1/user/goals/:id/", GoalController.update)
+        .delete("/api/v1/user/goals/:id/", GoalController.delete)
+        .post("/api/v1/user/goals/:goalID/tasks/", TaskController.getAll)
+        .post("/api/v1/user/goals/:goalID/tasks/get/:taskID/", TaskController.getByID)
+        .post("/api/v1/user/goals/:goalID/tasks/new/", TaskController.create)
         // .patch("/api/v1/user/:userID/goals/:goalID/tasks", TaskController.updateMultiple)
-        .patch("/api/v1/user/:userID/goals/:goalID/tasks/:taskID/", TaskController.update)
-        .delete("/api/v1/user/:userID/goals/:goalID/tasks/:taskID/", TaskController.delete)
+        .patch("/api/v1/user/goals/:goalID/tasks/:taskID/", TaskController.update)
+        .delete("/api/v1/user/goals/:goalID/tasks/:taskID/", TaskController.delete)
         .get("/api/v1/user", UserController.getAll)
-        .get("/api/v1/user/friendships/:userKey/", UserController.getFriendSkeletons)
-        .get("/api/v1/user/:userKey/friendships/", FriendshipController.getFriendshipsOfUser)
-        .get("/api/v1/user/:userKey/requests/", FriendshipController.getFriendshipRequestsOfUser)
-        .get("/api/v1/user/:userKey1/friendships/:userKey2/", FriendshipController.getFriendship)
-        .post("/api/v1/user/:userKey1/friendships/", FriendshipController.createRequest)
-        .patch("/api/v1/user/friendships/:id/", FriendshipController.updateFriendship)
-        .delete("/api/v1/user/friendships/:id/", FriendshipController.delete)
-        .get("/ws/v1/messages/:friendshipID/", (ctx: any) => {
+        .post("/api/v1/user/friendships/skeletons/", UserController.getFriendSkeletons)
+        .post("/api/v1/user/friendships/", FriendshipController.getFriendshipsOfUser)
+        .post("/api/v1/user/requests/", FriendshipController.getFriendshipRequestsOfUser)
+        .post("/api/v1/user/friendships/individual/", FriendshipController.getFriendship)
+        .post("/api/v1/user/friendships/create/", FriendshipController.createRequest)
+        .patch("/api/v1/user/friendships/update/", FriendshipController.updateFriendship)
+        .delete("/api/v1/user/friendships/", FriendshipController.delete)
+        .get("/ws/v1/messages/", (ctx: any) => {
             if (!ctx.isUpgradable) {
                 ctx.throw(501);
             }
@@ -43,32 +43,32 @@ export const api = (router: any) => {
             const ws = ctx.upgrade();
             let uid = "";
 
-            const friendshipID = ctx.params.friendshipID;
+            let friendshipID = "";
     
-            ws.onopen = () => {
-                console.log("User connected to server", friendshipID);
-    
-                uid = crypto.randomUUID()
-    
-                sockets.set(uid, [ws, friendshipID]);
+            ws.onopen = () => {    
+                uid = crypto.randomUUID();
 
-                // const messages = await messageService.getAll(friendshipID);
-
-                // console.log(messages);
-
-                // ws.send(messages);
+                sockets.set(uid, [ws, ""]);
             }
     
             ws.onmessage = async (m: any) => {
-                let data = m.data;
-    
-                console.log("Got message on server", friendshipID);
+                let data = JSON.parse(m.data);
 
-                data = await messageService.createFromSocket(data);
-    
-                for (const client of sockets.values()) {
-                    if (client[1] == friendshipID) {
-                        client[0].send(data.toString());
+                if (data["type"] == "connection_id") {
+                    friendshipID = data["friendship_id"];
+
+                    sockets.set(uid, [ws, friendshipID]);
+                    console.log("User connected to server", friendshipID);
+                }
+                else if (data["type"] == "message" && friendshipID != "") {
+                    console.log("Got message on server", friendshipID);
+
+                    data = await messageService.createFromSocket(data);
+        
+                    for (const client of sockets.values()) {
+                        if (client[1] == friendshipID) {
+                            client[0].send(data.toString());
+                        }
                     }
                 }
             };
@@ -79,17 +79,17 @@ export const api = (router: any) => {
                 sockets.delete(uid);
             };
         })
-        .get("/api/v1/messages/:friendshipID/:offset/", MessageController.getAll)
-        .post("/api/v1/messages/:friendshipID/", MessageController.create)
-        .get("/api/v1/user/:userKey/circles/", CirclesController.getCirclesOfUser)
-        .get("/api/v1/user/:userKey/posts/", CirclePostsController.getUserPosts)
-        .get("/api/v1/circles/:circleID/", CirclesController.getCircleById)
-        .delete("/api/v1/circles/:circleID/", CirclesController.deleteCircle)
-        .get("/api/v1/circles/:circleID/users/", CirclesController.getUsersOfCircle)
-        .post("/api/v1/circles/:circleID/users/:userKey/", CirclesController.createCircleConnection)
-        .post("/api/v1/circles/", CirclesController.createCircle)
-        .get("/api/v1/circles/:circleID/posts/", CirclePostsController.getCirclePosts)
-        .post("/api/v1/user/:userID/posts/", CirclePostsController.createCirclePost)
-        .delete("/api/v1/circles/:circleID/posts/:circlepostID/", CirclePostsController.deleteCirclePost)
-        .patch("/api/v1/circles/:circleID/posts/:circlepostID/", CirclePostsController.updateCirclePost)
+        .post("/api/v1/messages/:offset/", MessageController.getAll)
+        .post("/api/v1/messages/new/", MessageController.create)
+        .post("/api/v1/user/circles/", CirclesController.getCirclesOfUser)
+        .post("/api/v1/user/circles/posts/", CirclePostsController.getUserPosts)
+        .post("/api/v1/circles/", CirclesController.getCircleById)
+        .delete("/api/v1/circles/", CirclesController.deleteCircle)
+        .post("/api/v1/circles/users/", CirclesController.getUsersOfCircle)
+        .post("/api/v1/users/circles/connect/", CirclesController.createCircleConnection)
+        .post("/api/v1/circles/new/", CirclesController.createCircle)
+        .post("/api/v1/circles/posts/", CirclePostsController.getCirclePosts)
+        .post("/api/v1/user/posts/", CirclePostsController.createCirclePost)
+        .delete("/api/v1/circles/posts/:circlepostID/", CirclePostsController.deleteCirclePost)
+        .patch("/api/v1/circles/posts/:circlepostID/", CirclePostsController.updateCirclePost)
 };

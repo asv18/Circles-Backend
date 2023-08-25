@@ -84,8 +84,8 @@ class FriendShipService {
 
         let friendship: Friendship = new Friendship();
 
-        friendship.user1 = body["user1"];
-        friendship.user2 = body["user2"];
+        friendship.user1 = body["user_fkey_1"];
+        friendship.user2 = body["user_fkey_2"];
 
         return await friendshipRepository.createRequest(friendship);
     }
@@ -95,9 +95,9 @@ class FriendShipService {
 
         let friendship: Friendship = new Friendship();
 
-        friendship.id = ctx.params.id;
-        friendship.user1 = body["user1"];
-        friendship.user2 = body["user2"];
+        friendship.id = body["id"];
+        friendship.user1 = body["user_fkey_1"];
+        friendship.user2 = body["user_fkey_1"];
         friendship.relationship = body["relationship"];
         friendship.last_interacted_date = (new Date()).toISOString();
 
