@@ -7,7 +7,13 @@ class UserRepository {
         query = `LOWER('${query}')`
 
         return await database.queryArray(`
-            SELECT "first_name","last_name","username","photo_url","email","user_foreign_key" FROM "user" WHERE (LOWER("first_name") ~ ${query} OR LOWER("last_name") ~ ${query}) LIMIT 10;
+            SELECT "name","username","photo_url","email","user_foreign_key" FROM "user" WHERE (LOWER("name") ~ ${query} OR LOWER("username") ~ ${query}) LIMIT 10;
+        `)
+    }
+
+    async getByFKey(user_fkey: string): Promise<any> {
+        return await database.queryArray(`
+            SELECT "name","username","photo_url","email","user_foreign_key" FROM "user" WHERE "user_foreign_key" = '${user_fkey}';
         `)
     }
 
@@ -16,7 +22,7 @@ class UserRepository {
     }
 
     async getFriendSkeletons(userKey: string): Promise<any> {
-        return await database.queryArray(`SELECT "first_name", "last_name", "username", "email", "user_foreign_key", "photo_url" FROM "friendship" friend 
+        return await database.queryArray(`SELECT "name", "username", "email", "user_foreign_key", "photo_url" FROM "friendship" friend 
             INNER JOIN "user" u ON u.user_foreign_key = friend.user1 OR u.user_foreign_key = friend.user2 
             WHERE friend.user2 = '${userKey}' OR friend.user1 = '${userKey}' ORDER BY "last_interacted_date" ASC;`)
     }
@@ -26,11 +32,11 @@ class UserRepository {
     }
 
     async create(user: User): Promise<any> {
-        return await database.queryArray(`INSERT INTO "user" ("first_name", "last_name", "username", "password", "email", "authID", "photo_url") VALUES ('${user.first_name}','${user.last_name}','${user.username}','${user.password}','${user.email}','${user.authID}','${user.photo_url}');`)
+        return await database.queryArray(`INSERT INTO "user" ("name", "username", "password", "email", "authID", "photo_url") VALUES ('${user.name}','${user.username}','${user.password}','${user.email}','${user.authID}','${user.photo_url}');`)
     }
 
     async update(user: User): Promise<any> {
-        return await database.queryArray(`UPDATE "user" SET "first_name" = '${user.first_name}', "last_name" = '${user.last_name}', "username" = '${user.username}', "password" = '${user.password}', "photo_url" = '${user.photo_url}'  WHERE "id" = '${user.id}';`)
+        return await database.queryArray(`UPDATE "user" SET "name" = '${user.name}', "username" = '${user.username}', "password" = '${user.password}', "photo_url" = '${user.photo_url}'  WHERE "id" = '${user.id}';`)
     }
 
     async delete(id: string): Promise<any> {

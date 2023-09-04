@@ -2,6 +2,7 @@ import { Context } from "https://deno.land/x/oak/mod.ts";
 import CirclePostConnection from "../dto/circle_post_connection.dto.ts";
 import CirclePost from "../dto/circle_posts.dto.ts";
 import circlePostsRepository from "../repository/circle_posts.repository.ts";
+import userService from "../../../user/service/user.service.ts";
 
 class CirclePostsService {
     async getCirclePosts(ctx: any): Promise<any> {
@@ -31,6 +32,26 @@ class CirclePostsService {
 
             circlePosts.push(postJson);
         });
+
+        for (let i = 0; i < circlePosts.length; i++) {
+            const poster_fkey = circlePosts[i]["poster_fkey" as keyof typeof circlePosts[typeof i]] as string;
+
+            let poster = await userService.getByFKey(poster_fkey);
+
+            const circlePost: JSON = <JSON><any> {
+                "id": circlePosts[i]["id" as keyof typeof circlePosts[typeof i]],
+                "poster": poster,
+                "title": circlePosts[i]["title" as keyof typeof circlePosts[typeof i]],
+                "image": circlePosts[i]["image" as keyof typeof circlePosts[typeof i]],
+                "description": circlePosts[i]["description" as keyof typeof circlePosts[typeof i]],
+                "goal_id": circlePosts[i]["goal_id" as keyof typeof circlePosts[typeof i]],
+                "task_id": circlePosts[i]["task_id" as keyof typeof circlePosts[typeof i]],
+                "likes": circlePosts[i]["likes" as keyof typeof circlePosts[typeof i]],
+                "posted_at": circlePosts[i]["posted_at" as keyof typeof circlePosts[typeof i]],
+            }
+
+            circlePosts[i] = circlePost;
+        }
 
         return circlePosts;
     }

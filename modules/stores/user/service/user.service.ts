@@ -15,8 +15,7 @@ class UserService {
             });
 
             const userJson: JSON = <JSON><any> {
-                "first_name": user.first_name,
-                "last_name": user.last_name,
+                "name": user.name,
                 "username": user.username,
                 "photo_url": user.photo_url,
                 "user_foreign_key": user.user_foreign_key,
@@ -26,6 +25,28 @@ class UserService {
         });
 
         return users;
+    }
+
+    async getByFKey(user_fkey: string) {
+        const data = await userRepository.getByFKey(user_fkey);
+        let user: any = new User();
+
+        data.rows.map((dataUser: []) => {
+            data.rowDescription.columns.map((item: any, index: number) => {
+                user[item.name] = dataUser[index]
+            });
+        });
+
+        const userJSON: JSON = <JSON><any> {
+            "name": user.name,
+            "username": user.username,
+            "email": user.email,
+            "user_foreign_key": user.user_foreign_key,
+            "photo_url": user.photo_url,
+        }
+
+
+        return userJSON;
     }
 
     async getFriendSkeletons(userKey: string): Promise<any> {
@@ -44,8 +65,7 @@ class UserService {
 
             if (userKey !== user.user_foreign_key) {
                 const userJson: JSON = <JSON><any> {
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
+                    "name": user.name,
                     "username": user.username,
                     "photo_url": user.photo_url,
                     "email": user.email,
@@ -91,8 +111,7 @@ class UserService {
 
         const userJSON: JSON = <JSON><any> {
             "id": user.id,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
+            "name": user.name,
             "username": user.username,
             "email": user.email,
             "registeredAt": user.registeredAt,
@@ -110,8 +129,7 @@ class UserService {
 
         let user: User = new User();
 
-        user.first_name = body["first_name"];
-        user.last_name = body["last_name"];
+        user.name = body["name"];
         user.username = body["username"];
         user.email = body["email"];
         user.authID = body["authID"];
@@ -128,8 +146,7 @@ class UserService {
         let user = new User();
         
         user.id = body["id"];
-        user.first_name = body["first_name"];
-        user.last_name = body["last_name"];
+        user.name = body["name"];
         user.username = body["username"];
         user.password = body["password"];
         user.email = body["email"];

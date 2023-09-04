@@ -18,7 +18,7 @@ class CirclesRepository {
 
     async getUsersOfCircle(circleID: string): Promise<any> {
         return await database.queryArray(`
-            SELECT "first_name","last_name","username","photo_url","email","user_foreign_key" FROM "circle_connection" circle_connection INNER JOIN "user" u 
+            SELECT "name","username","photo_url","email","user_foreign_key" FROM "circle_connection" circle_connection INNER JOIN "user" u 
             ON u.user_foreign_key = circle_connection.user_fkey WHERE circle_connection.circle_id = '${circleID}';
         `);
     }

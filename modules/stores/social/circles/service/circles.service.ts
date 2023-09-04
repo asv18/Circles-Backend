@@ -1,5 +1,5 @@
-import { Context } from "https://deno.land/x/oak/mod.ts";
 import User from "../../../user/dto/user.dto.ts";
+import userService from "../../../user/service/user.service.ts";
 import CircleConnection from "../dto/circle_connection.dto.ts";
 import Circle from "../dto/circles.dto.ts";
 import circlesRepository from "../repository/circles.repository.ts";
@@ -19,6 +19,9 @@ class CirclesService {
                 circle[item.name] = a_circle[index]
             });
 
+            //"admin": circle.admin,
+            
+
             const circleJSON: JSON = <JSON><any> {
                 "id": circle.id,
                 "created_at": circle.created_at,
@@ -35,6 +38,10 @@ class CirclesService {
         for (let i = 0; i < circles.length; i++) {
             const users = await this.getUsersOfCircle(circles[i]["id" as keyof typeof circles[typeof i]].toString());
 
+            const admin = circles[i]["admin" as keyof typeof circles[typeof i]] as string;
+
+            let adminJSON = await userService.getByFKey(admin);
+
             const circle: JSON = <JSON><any> {
                 "id": circles[i]["id" as keyof typeof circles[typeof i]],
                 "created_at": circles[i]["created_at" as keyof typeof circles[typeof i]],
@@ -42,7 +49,7 @@ class CirclesService {
                 "circle_name": circles[i]["circle_name" as keyof typeof circles[typeof i]],
                 "image": circles[i]["image" as keyof typeof circles[typeof i]],
                 "created_by": circles[i]["created_by" as keyof typeof circles[typeof i]],
-                "admin": circles[i]["admin" as keyof typeof circles[typeof i]],
+                "admin": adminJSON,
                 "users": users
             }
 
@@ -95,8 +102,7 @@ class CirclesService {
             });
 
             const userJson: JSON = <JSON><any> {
-                "first_name": user.first_name,
-                "last_name": user.last_name,
+                "name": user.name,
                 "username": user.username,
                 "photo_url": user.photo_url,
                 "user_foreign_key": user.user_foreign_key,
