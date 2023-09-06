@@ -90,6 +90,6 @@ export const api = (router: any) => {
         .post("/api/v1/circles/new/", CirclesController.createCircle)
         .post("/api/v1/circles/posts/", CirclePostsController.getCirclePosts)
         .post("/api/v1/user/posts/", CirclePostsController.createCirclePost)
-        .delete("/api/v1/circles/posts/:circlepostID/", CirclePostsController.deleteCirclePost)
-        .patch("/api/v1/circles/posts/:circlepostID/", CirclePostsController.updateCirclePost)
+        .delete("/api/v1/circles/posts/", CirclePostsController.deleteCirclePost)
+        .patch("/api/v1/circles/posts/", CirclePostsController.updateCirclePost)
 };

@@ -1,4 +1,3 @@
-import { Context } from "https://deno.land/x/oak/mod.ts";
 import CirclePostConnection from "../dto/circle_post_connection.dto.ts";
 import CirclePost from "../dto/circle_posts.dto.ts";
 import circlePostsRepository from "../repository/circle_posts.repository.ts";
@@ -86,6 +85,8 @@ class CirclePostsService {
             circlePostConnection.circle_id = circleID;
             await circlePostsRepository.createCirclePostConnection(circlePostConnection);
         });
+
+        return data;
     }
 
     async getUserPosts(ctx: any): Promise<any> {
@@ -120,31 +121,22 @@ class CirclePostsService {
     async updateCirclePost(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
 
-        const circlePostID = ctx.params.circlepostID;
+        const circlePostID = body["circle_post_id"];
 
         const post: CirclePost = new CirclePost();
 
         post.id = circlePostID;
+        post.title = body["title"];
+        post.description = body["description"];
+        post.image = body["image"];
 
-        // TODO: this
-
-        /*
-        "id": post.id.toString(),
-        "circle_id": post.circle_id,
-        "poster_fkey": post.poster_fkey,
-        "title": post.title,
-        "image": post.image,
-        "description": post.description,
-        "goal_id": post.goal_id,
-        "task_id": (post.task_id != null) ? post.task_id.toString() : null,
-        "likes": post.likes.toString(),
-        */
+        return await circlePostsRepository.updatePost(post);
     }
 
     async deleteCirclePost(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
 
-        return await circlePostsRepository.deleteCirclePost(ctx.params.circlepostID, body["circle_id"]);
+        return await circlePostsRepository.deleteCirclePost(body["circle_post_id"], body["circle_id"]);
     }
 }
 

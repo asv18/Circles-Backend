@@ -29,6 +29,14 @@ class CirclePostsRepository {
         return await database.queryArray(`SELECT * FROM "circle_post" WHERE "poster_fkey"='${userKey}'`)
     }
 
+    async updatePost(new_post: CirclePost): Promise<any> {
+        return await database.queryArray(`
+            UPDATE "circle_post" 
+            SET "title" = '${new_post.title}', "description" = '${new_post.description}', "image" = '${new_post.image}'
+            WHERE "id" = '${new_post.id}';
+        `);
+    }
+
     async deleteCirclePost(circlepost_id: string, circle_id: string): Promise<any> {
         return await database.queryArray(`
             DELETE FROM "circle_post" WHERE "id"='${circlepost_id}' AND (SELECT exists (SELECT "id" FROM "circle_post_connection" WHERE "circle_id"='${circle_id}' AND "post_id"='${circlepost_id}' LIMIT 1));
