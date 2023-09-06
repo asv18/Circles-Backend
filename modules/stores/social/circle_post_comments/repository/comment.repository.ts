@@ -1,5 +1,4 @@
 import database from "../../../../../database.ts";
-import commentController from "../controller/comment.controller.ts";
 import Comment from "../dto/comment.dto.ts";
 
 class CommentRepository {

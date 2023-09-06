@@ -6,6 +6,7 @@ import MessageController from "../stores/social/message/controller/message.contr
 import messageService from "../stores/social/message/service/message.service.ts";
 import CirclesController from "../stores/social/circles/controller/circles.controller.ts";
 import CirclePostsController from "../stores/social/circle_posts/controller/circle_posts.controller.ts";
+import CommentController from "../stores/social/circle_post_comments/controller/comment.controller.ts";
 
 export const api = (router: any) => {
     const sockets = new Map<string, [WebSocket, string]>();
@@ -92,4 +93,8 @@ export const api = (router: any) => {
         .post("/api/v1/user/posts/", CirclePostsController.createCirclePost)
         .delete("/api/v1/circles/posts/", CirclePostsController.deleteCirclePost)
         .patch("/api/v1/circles/posts/", CirclePostsController.updateCirclePost)
+        .post("/api/v1/circles/posts/comments/", CommentController.getComments)
+        .post("/api/v1/circles/posts/comments/new/", CommentController.createComment)
+        .patch("/api/v1/circles/posts/comments/", CommentController.updateComment)
+        .delete("/api/v1/circles/posts/comments/", CommentController.deleteComment)
 };
