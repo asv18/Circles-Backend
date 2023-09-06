@@ -11,15 +11,15 @@ class CommentRepository {
 
     async createComment(comment: Comment): Promise<any> {
         return await database.queryArray(`
-            INSERT INTO "circle_post_comment" ("poster_fkey" "contents", "post_id", "parent_id")
+            INSERT INTO "circle_post_comment" ("poster_fkey", "contents", "post_id", "parent_id")
             VALUES ('${comment.poster_fkey}', '${comment.contents}', '${comment.post_id}', ${comment.parent_id == undefined ? null : `'${comment.parent_id}'`});
         `);
     }
 
     async updateComment(new_comment: Comment): Promise<any> {
         return await database.queryArray(`
-            UPDATE "circle_post_comment" ("contents")
-            VALUES ('${new_comment.contents}') WHERE "id" = '${new_comment.id}' AND "poster_fkey" = '${new_comment.poster_fkey}';
+            UPDATE "circle_post_comment" SET "contents" = '${new_comment.contents}'
+            WHERE "id" = '${new_comment.id}' AND "poster_fkey" = '${new_comment.poster_fkey}';
         `);
     }
 

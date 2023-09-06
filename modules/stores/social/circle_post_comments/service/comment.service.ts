@@ -1,10 +1,11 @@
+import { parseCommandCompleteMessage } from "https://deno.land/x/postgres@v0.17.0/connection/message.ts";
 import userService from "../../../user/service/user.service.ts";
 import Comment from "../dto/comment.dto.ts";
 import commentRepository from "../repository/comment.repository.ts";
 
 class CommentService {
     async getComments(ctx: any): Promise<any> {
-        const body = ctx.request.body().value;
+        const body = await ctx.request.body().value;
 
         const data = await commentRepository.getComments(body["post_id"]);
 
@@ -53,7 +54,7 @@ class CommentService {
     }
 
     async createComment(ctx: any): Promise<any> {
-        const body = ctx.request.body().value;
+        const body = await ctx.request.body().value;
 
         const comment = new Comment();
 
@@ -66,7 +67,7 @@ class CommentService {
     }
 
     async updateComment(ctx: any): Promise<any> {
-        const body = ctx.request.body().value;
+        const body = await ctx.request.body().value;
 
         const comment = new Comment();
 
@@ -74,11 +75,11 @@ class CommentService {
         comment.contents = body["contents"];
         comment.poster_fkey = body["poster_fkey"];
 
-        return await commentRepository.createComment(comment); 
+        return await commentRepository.updateComment(comment); 
     }
 
     async deleteComment(ctx: any): Promise<any> {
-        const body = ctx.request.body().value;
+        const body = await ctx.request.body().value;
 
         return await commentRepository.deleteComment(body["id"]);
     }
