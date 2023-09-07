@@ -1,4 +1,3 @@
-import { parseCommandCompleteMessage } from "https://deno.land/x/postgres@v0.17.0/connection/message.ts";
 import userService from "../../../user/service/user.service.ts";
 import Comment from "../dto/comment.dto.ts";
 import commentRepository from "../repository/comment.repository.ts";

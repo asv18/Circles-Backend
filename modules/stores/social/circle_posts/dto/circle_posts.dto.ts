@@ -8,4 +8,5 @@ export default class CirclePost {
     task_id: bigint | null | undefined;
     likes?: number;
     posted_at?: string;
+    connection_id?: bigint;
 }

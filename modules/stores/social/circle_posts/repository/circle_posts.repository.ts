@@ -5,7 +5,7 @@ import CirclePost from "../dto/circle_posts.dto.ts";
 class CirclePostsRepository {
     async getCirclePosts(circle_id: string): Promise<any> {
         return await database.queryArray(`
-            SELECT "id", "poster_fkey", "title", "image", "description", "goal_id", "task_id", "likes", CAST("posted_at" as STRING) FROM "circle_post_connection" circle_post_connection INNER JOIN "circle_post" c 
+            SELECT "id", "poster_fkey", "title", "image", "description", "goal_id", "task_id", "likes", CAST("posted_at" as STRING), "connection_id" FROM "circle_post_connection" circle_post_connection INNER JOIN "circle_post" c 
             ON c.id = circle_post_connection.post_id WHERE circle_post_connection.circle_id = '${circle_id}';
         `);
     }

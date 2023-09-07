@@ -2,12 +2,15 @@ import CirclePostConnection from "../dto/circle_post_connection.dto.ts";
 import CirclePost from "../dto/circle_posts.dto.ts";
 import circlePostsRepository from "../repository/circle_posts.repository.ts";
 import userService from "../../../user/service/user.service.ts";
+import likeConnectionService from "../../like_connection/service/like_connection.service.ts";
 
 class CirclePostsService {
     async getCirclePosts(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
 
         const data = await circlePostsRepository.getCirclePosts(body["circle_id"]);
+        const user_fkey = body["user_fkey"];
+
         let circlePosts = new Array<JSON>();
 
         data.rows.map((a_post: []) => {
@@ -27,6 +30,7 @@ class CirclePostsService {
                 "task_id": (post.task_id != null) ? post.task_id.toString() : null,
                 "likes": post.likes.toString(),
                 "posted_at": post.posted_at,
+                "connection_id": post.connection_id.toString(),
             }
 
             circlePosts.push(postJson);
@@ -36,6 +40,8 @@ class CirclePostsService {
             const poster_fkey = circlePosts[i]["poster_fkey" as keyof typeof circlePosts[typeof i]] as string;
 
             let poster = await userService.getByFKey(poster_fkey);
+
+            let liked = await likeConnectionService.getLike(poster_fkey);
 
             const circlePost: JSON = <JSON><any> {
                 "id": circlePosts[i]["id" as keyof typeof circlePosts[typeof i]],
@@ -47,6 +53,8 @@ class CirclePostsService {
                 "task_id": circlePosts[i]["task_id" as keyof typeof circlePosts[typeof i]],
                 "likes": circlePosts[i]["likes" as keyof typeof circlePosts[typeof i]],
                 "posted_at": circlePosts[i]["posted_at" as keyof typeof circlePosts[typeof i]],
+                "connection_id": circlePosts[i]["connection_id" as keyof typeof circlePosts[typeof i]],
+                "liked": liked,
             }
 
             circlePosts[i] = circlePost;
