@@ -1,3 +1,4 @@
+import likeConnectionService from "../../like_connection/service/like_connection.service.ts";
 import commentService from "../service/comment.service.ts";
 
 class CommentController {
@@ -44,6 +45,33 @@ class CommentController {
             meta: {
                 code: 200,
                 status: "Ok",
+            }
+        }
+    }
+    
+    async updateLikeComment(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        if (body["like_id"] == null || body["like_id"] == undefined) {
+            await likeConnectionService.createLike(body["user_fkey"], body["comment_id"], undefined);
+            await commentService.likeComment(body["comment_id"]);
+        }
+        else {
+            await likeConnectionService.updateLike(body["user_fkey"], body["like_id"], body["like_status"]);
+
+            if (body["like_status"] == "unliked") {
+                await commentService.unlikeComment(body["comment_id"]);
+            }
+            else {
+                await commentService.likeComment(body["comment_id"]);
+            }
+        }
+
+        ctx.response.status = 200;
+        ctx.response.body = {
+            meta: {
+                code: 200,
+                status: "Done",
             }
         }
     }

@@ -28,6 +28,18 @@ class CommentRepository {
             DELETE FROM "circle_post_comment" WHERE "id" = '${comment_id}';
         `);
     }
+
+    async likeComment(comment_id: string): Promise<any> {
+        return await database.queryArray(`
+            UPDATE "circle_post_comment" SET "likes" = "likes" + 1 WHERE "id" = '${comment_id}';
+        `);
+    }
+
+    async unlikeComment(comment_id: string): Promise<any> {
+        return await database.queryArray(`
+            UPDATE "circle_post_comment" SET "likes" = "likes" - 1 WHERE "id" = '${comment_id}';
+        `);
+    }
 }
 
 export default new CommentRepository();

@@ -97,4 +97,6 @@ export const api = (router: any) => {
         .post("/api/v1/circles/posts/comments/new/", CommentController.createComment)
         .patch("/api/v1/circles/posts/comments/", CommentController.updateComment)
         .delete("/api/v1/circles/posts/comments/", CommentController.deleteComment)
+        .post("/api/v1/circles/posts/likepost/", CirclePostsController.updateLikeCirclePost)
+        .post("/api/v1/circles/posts/comments/likecomment/", CommentController.updateLikeComment)
 };

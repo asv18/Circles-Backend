@@ -1,4 +1,5 @@
 import userService from "../../../user/service/user.service.ts";
+import likeConnectionService from "../../like_connection/service/like_connection.service.ts";
 import Comment from "../dto/comment.dto.ts";
 import commentRepository from "../repository/comment.repository.ts";
 
@@ -7,6 +8,7 @@ class CommentService {
         const body = await ctx.request.body().value;
 
         const data = await commentRepository.getComments(body["post_id"]);
+        const user_fkey = body["user_fkey"];
 
         const comments = new Array<JSON>();
 
@@ -35,6 +37,8 @@ class CommentService {
 
             let poster = await userService.getByFKey(poster_fkey);
 
+            let liked = await likeConnectionService.getLike(user_fkey, undefined, comments[i]["id" as keyof typeof comments[typeof i]] as string);
+
             const commentJSON: JSON = <JSON><any> {
                 "id": comments[i]["id" as keyof typeof comments[typeof i]],
                 "poster": poster,
@@ -44,6 +48,7 @@ class CommentService {
                 "post_id": comments[i]["post_id" as keyof typeof comments[typeof i]],
                 "parent_id": comments[i]["parent_id" as keyof typeof comments[typeof i]],
                 "likes": comments[i]["likes" as keyof typeof comments[typeof i]],
+                "liked": liked,
             }
 
             comments[i] = commentJSON;
@@ -81,6 +86,14 @@ class CommentService {
         const body = await ctx.request.body().value;
 
         return await commentRepository.deleteComment(body["id"]);
+    }
+
+    async likeComment(comment_id: string): Promise<any> {
+        return await commentRepository.likeComment(comment_id);
+    }
+
+    async unlikeComment(comment_id: string): Promise<any> {
+        return await commentRepository.unlikeComment(comment_id);
     }
 }
 

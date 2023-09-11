@@ -2,8 +2,8 @@ import LikeConnection from "../dto/like_connection.dto.ts";
 import likeConnectionRepository from "../repository/like_connection.repository.ts";
 
 class LikeConnectionService {
-    async getLike(user_fkey: string): Promise<any> {
-        const data = await likeConnectionRepository.getLike(user_fkey);
+    async getLike(user_fkey: string, post_connection_id?: string, comment_id?: string): Promise<any> {
+        const data = await likeConnectionRepository.getLike(user_fkey, post_connection_id, comment_id);
 
         let like: any = new LikeConnection();
 
@@ -24,11 +24,11 @@ class LikeConnectionService {
         return likeJSON;
     }
 
-    async createLike(user_fkey: string, comment_id: string, post_connection_id: bigint): Promise<any> {
+    async createLike(user_fkey: string, comment_id?: string, post_connection_id?: bigint): Promise<any> {
         const like = new LikeConnection();
 
         like.user_fkey = user_fkey;
-        like.comment_id = BigInt(comment_id);
+        like.comment_id = comment_id == null || comment_id == undefined ? null : BigInt(comment_id!);
         like.post_connection_id = post_connection_id;
         
         return await likeConnectionRepository.createLike(like);

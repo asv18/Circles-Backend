@@ -41,7 +41,7 @@ class CirclePostsService {
 
             let poster = await userService.getByFKey(poster_fkey);
 
-            let liked = await likeConnectionService.getLike(poster_fkey);
+            let liked = await likeConnectionService.getLike(user_fkey, circlePosts[i]["connection_id" as keyof typeof circlePosts[typeof i]] as string, undefined);
 
             const circlePost: JSON = <JSON><any> {
                 "id": circlePosts[i]["id" as keyof typeof circlePosts[typeof i]],
@@ -139,6 +139,14 @@ class CirclePostsService {
         post.image = body["image"];
 
         return await circlePostsRepository.updatePost(post);
+    }
+    
+    async likePost(connection_id: string): Promise<any> {
+        return await circlePostsRepository.likePost(connection_id);
+    }
+
+    async unlikePost(connection_id: string): Promise<any> {
+        return await circlePostsRepository.unlikePost(connection_id);
     }
 
     async deleteCirclePost(ctx: any): Promise<any> {

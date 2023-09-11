@@ -2,9 +2,9 @@ import database from "../../../../../database.ts";
 import LikeConnection from "../dto/like_connection.dto.ts";
 
 class LikeConnectionRepository {
-    async getLike(user_fkey: string): Promise<any> {
+    async getLike(user_fkey: string, post_connection_id?: string, comment_id?: string): Promise<any> {
         return await database.queryArray(`
-            SELECT * FROM "like_connection" WHERE "user_fkey" = '${user_fkey}';
+            SELECT * FROM "like_connection" WHERE "user_fkey" = '${user_fkey}' AND "post_connection_id" ${post_connection_id == undefined ? 'IS NULL' : `= '${post_connection_id}'`} AND "comment_id" ${comment_id == undefined ? 'IS NULL' : `= '${comment_id}'`};
         `);
     }
 

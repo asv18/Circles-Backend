@@ -29,6 +29,22 @@ class CirclePostsRepository {
         return await database.queryArray(`SELECT * FROM "circle_post" WHERE "poster_fkey"='${userKey}'`)
     }
 
+    async likePost(connection_id: string): Promise<any> {
+        return await database.queryArray(`
+            UPDATE "circle_post_connection"
+            SET "likes" = "likes" + 1
+            WHERE "connection_id" = '${connection_id}';
+        `)
+    }
+
+    async unlikePost(connection_id: string): Promise<any> {
+        return await database.queryArray(`
+            UPDATE "circle_post_connection"
+            SET "likes" = "likes" - 1
+            WHERE "connection_id" = '${connection_id}';
+        `)
+    }
+
     async updatePost(new_post: CirclePost): Promise<any> {
         return await database.queryArray(`
             UPDATE "circle_post" 
