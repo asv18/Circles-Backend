@@ -24,6 +24,20 @@ class LikeConnectionService {
         return likeJSON;
     }
 
+    async checkLike(user_fkey: string, post_connection_id?: string, comment_id?: string): Promise<any> {
+        const data = await likeConnectionRepository.checkLike(user_fkey, post_connection_id, comment_id);
+
+        let exists = false;
+
+        data.rows.map((exists_obj: []) => {
+            data.rowDescription.columns.map((item: any, index: number) => {
+                exists = exists_obj[index];
+            });
+        });
+
+        return exists;
+    }
+
     async createLike(user_fkey: string, comment_id?: string, post_connection_id?: bigint): Promise<any> {
         const like = new LikeConnection();
 

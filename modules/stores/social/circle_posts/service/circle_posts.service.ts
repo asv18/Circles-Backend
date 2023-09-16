@@ -3,6 +3,7 @@ import CirclePost from "../dto/circle_posts.dto.ts";
 import circlePostsRepository from "../repository/circle_posts.repository.ts";
 import userService from "../../../user/service/user.service.ts";
 import likeConnectionService from "../../like_connection/service/like_connection.service.ts";
+import commentService from "../../circle_post_comments/service/comment.service.ts";
 
 class CirclePostsService {
     async getCirclePosts(ctx: any): Promise<any> {

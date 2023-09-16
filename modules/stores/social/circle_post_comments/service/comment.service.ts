@@ -48,7 +48,7 @@ class CommentService {
                 "post_id": comments[i]["post_id" as keyof typeof comments[typeof i]],
                 "parent_id": comments[i]["parent_id" as keyof typeof comments[typeof i]],
                 "likes": comments[i]["likes" as keyof typeof comments[typeof i]],
-                "liked": liked,
+                "liked": liked.toString(),
             }
 
             comments[i] = commentJSON;

@@ -59,7 +59,7 @@ class CommentController {
         else {
             await likeConnectionService.updateLike(body["user_fkey"], body["like_id"], body["like_status"]);
 
-            if (body["like_status"] == "unliked") {
+            if (body["like_status"] == "not liked") {
                 await commentService.unlikeComment(body["comment_id"]);
             }
             else {

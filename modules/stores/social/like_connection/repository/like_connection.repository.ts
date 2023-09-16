@@ -8,6 +8,12 @@ class LikeConnectionRepository {
         `);
     }
 
+    async checkLike(user_fkey: string, post_connection_id?: string, comment_id?: string): Promise<any> {
+        return await database.queryArray(`
+            SELECT exists (SELECT * FROM "like_connection" WHERE "user_fkey" = '${user_fkey}' AND "post_connection_id" ${post_connection_id == undefined ? 'IS NULL' : `= '${post_connection_id}'`} AND "comment_id" ${comment_id == undefined ? 'IS NULL' : `= '${comment_id}'`});
+        `);
+    }
+
     async createLike(like: LikeConnection): Promise<any> {
         return await database.queryArray(`
             INSERT INTO "like_connection" ("user_fkey", "comment_id", "post_connection_id", "like_status")
@@ -18,7 +24,7 @@ class LikeConnectionRepository {
 
     async updateLike(like: LikeConnection): Promise<any> {
         return await database.queryArray(`
-            UPDATE "like_connection" SET "like_status" = '${like.like_status}' WHERE "like_id" = '${like.id}' AND "user_fkey" = '${like.user_fkey}';
+            UPDATE "like_connection" SET "like_status" = '${like.like_status}' WHERE "id" = '${like.id}' AND "user_fkey" = '${like.user_fkey}';
         `);
     }
 

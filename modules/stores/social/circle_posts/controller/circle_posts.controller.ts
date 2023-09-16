@@ -63,19 +63,24 @@ class CirclePostsController {
     async updateLikeCirclePost(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
 
-        if (body["like_id"] == null || body["like_id"] == undefined) {
+        const exists: boolean = await likeConnectionService.checkLike(body["user_fkey"], body["connection_id"], undefined);
+        
+        if ((body["like_id"] == null || body["like_id"] == undefined) && !exists) {
             await likeConnectionService.createLike(body["user_fkey"], undefined, body["connection_id"]);
             await circlePostsService.likePost(body["connection_id"]);
         }
-        else {
+        else if (body["like_id"] != null && body["like_id"] != undefined) {
             await likeConnectionService.updateLike(body["user_fkey"], body["like_id"], body["like_status"]);
 
-            if (body["like_status"] == "unliked") {
+            if (body["like_status"] == "not liked") {
                 await circlePostsService.unlikePost(body["connection_id"]);
             }
             else {
                 await circlePostsService.likePost(body["connection_id"]);
             }
+        }
+        else {
+            throw Error();
         }
 
         ctx.response.status = 200;
