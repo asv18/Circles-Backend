@@ -7,6 +7,7 @@ export default class CirclePost {
     goal_id: string | null | undefined;
     task_id: bigint | null | undefined;
     likes?: number;
+    comments?: number;
     posted_at?: string;
     connection_id?: bigint;
 }

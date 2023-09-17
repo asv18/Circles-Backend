@@ -5,8 +5,11 @@ import CirclePost from "../dto/circle_posts.dto.ts";
 class CirclePostsRepository {
     async getCirclePosts(circle_id: string): Promise<any> {
         return await database.queryArray(`
-            SELECT "id", "poster_fkey", "title", "image", "description", "goal_id", "task_id", "likes", CAST("posted_at" as STRING), "connection_id" FROM "circle_post_connection" circle_post_connection INNER JOIN "circle_post" c 
-            ON c.id = circle_post_connection.post_id WHERE circle_post_connection.circle_id = '${circle_id}';
+            SELECT "id", "poster_fkey", "title", "image", "description", "goal_id", "task_id", CAST("posted_at" as STRING), "connection_id",
+            (SELECT COUNT(*) FROM "like_connection" AS INT8 WHERE "post_connection_id" = "connection_id" AND "like_status" = 'liked') AS "likes", 
+            (SELECT COUNT(*) FROM "circle_post_comment" AS INT8 WHERE "post_connection_id" = "connection_id") AS "comments"
+            FROM "circle_post_connection" circle_post_connection_obj INNER JOIN "circle_post" c 
+            ON c.id = circle_post_connection_obj.post_id WHERE circle_post_connection_obj.circle_id = '${circle_id}';
         `);
     }
 
@@ -27,22 +30,6 @@ class CirclePostsRepository {
 
     async getUserPosts(userKey: string): Promise<any> {
         return await database.queryArray(`SELECT * FROM "circle_post" WHERE "poster_fkey"='${userKey}'`)
-    }
-
-    async likePost(connection_id: string): Promise<any> {
-        return await database.queryArray(`
-            UPDATE "circle_post_connection"
-            SET "likes" = "likes" + 1
-            WHERE "connection_id" = '${connection_id}';
-        `)
-    }
-
-    async unlikePost(connection_id: string): Promise<any> {
-        return await database.queryArray(`
-            UPDATE "circle_post_connection"
-            SET "likes" = "likes" - 1
-            WHERE "connection_id" = '${connection_id}';
-        `)
     }
 
     async updatePost(new_post: CirclePost): Promise<any> {

@@ -3,7 +3,6 @@ import CirclePost from "../dto/circle_posts.dto.ts";
 import circlePostsRepository from "../repository/circle_posts.repository.ts";
 import userService from "../../../user/service/user.service.ts";
 import likeConnectionService from "../../like_connection/service/like_connection.service.ts";
-import commentService from "../../circle_post_comments/service/comment.service.ts";
 
 class CirclePostsService {
     async getCirclePosts(ctx: any): Promise<any> {
@@ -30,6 +29,7 @@ class CirclePostsService {
                 "goal_id": post.goal_id,
                 "task_id": (post.task_id != null) ? post.task_id.toString() : null,
                 "likes": post.likes.toString(),
+                "comments": post.comments.toString(),
                 "posted_at": post.posted_at,
                 "connection_id": post.connection_id.toString(),
             }
@@ -53,6 +53,7 @@ class CirclePostsService {
                 "goal_id": circlePosts[i]["goal_id" as keyof typeof circlePosts[typeof i]],
                 "task_id": circlePosts[i]["task_id" as keyof typeof circlePosts[typeof i]],
                 "likes": circlePosts[i]["likes" as keyof typeof circlePosts[typeof i]],
+                "comments": circlePosts[i]["comments" as keyof typeof circlePosts[typeof i]],
                 "posted_at": circlePosts[i]["posted_at" as keyof typeof circlePosts[typeof i]],
                 "connection_id": circlePosts[i]["connection_id" as keyof typeof circlePosts[typeof i]],
                 "liked": liked,
@@ -140,14 +141,6 @@ class CirclePostsService {
         post.image = body["image"];
 
         return await circlePostsRepository.updatePost(post);
-    }
-    
-    async likePost(connection_id: string): Promise<any> {
-        return await circlePostsRepository.likePost(connection_id);
-    }
-
-    async unlikePost(connection_id: string): Promise<any> {
-        return await circlePostsRepository.unlikePost(connection_id);
     }
 
     async deleteCirclePost(ctx: any): Promise<any> {
