@@ -13,15 +13,14 @@ class CommentController {
         }
     }
 
-    async createComment(ctx: any): Promise<any> {
-        await commentService.createComment(ctx)
-        
+    async createComment(ctx: any): Promise<any> {     
         ctx.response.status = 201;
         ctx.response.body = {
             meta: {
                 code: 201,
                 status: "Created",
             },
+            data: await commentService.createComment(ctx),
         }
     }
 
@@ -52,19 +51,13 @@ class CommentController {
     async updateLikeComment(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
 
+        let like = body;
+
         if (body["like_id"] == null || body["like_id"] == undefined) {
-            await likeConnectionService.createLike(body["user_fkey"], body["comment_id"], undefined);
-            await commentService.likeComment(body["comment_id"]);
+            like = await likeConnectionService.createLike(body["user_fkey"], body["comment_id"], undefined);
         }
         else {
             await likeConnectionService.updateLike(body["user_fkey"], body["like_id"], body["like_status"]);
-
-            if (body["like_status"] == "not liked") {
-                await commentService.unlikeComment(body["comment_id"]);
-            }
-            else {
-                await commentService.likeComment(body["comment_id"]);
-            }
         }
 
         ctx.response.status = 200;
@@ -72,7 +65,8 @@ class CommentController {
             meta: {
                 code: 200,
                 status: "Done",
-            }
+            },
+            data: like,
         }
     }
 }

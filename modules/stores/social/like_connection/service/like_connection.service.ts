@@ -45,7 +45,25 @@ class LikeConnectionService {
         like.comment_id = comment_id == null || comment_id == undefined ? null : BigInt(comment_id!);
         like.post_connection_id = post_connection_id;
         
-        return await likeConnectionRepository.createLike(like);
+        const data = await likeConnectionRepository.createLike(like);
+
+        let newLike: any = new LikeConnection();
+
+        data.rows.map((a_like: []) => {
+            data.rowDescription.columns.map((item: any, index: number) => {
+                newLike[item.name] = a_like[index]
+            });
+        });
+
+        const likeJSON: JSON = <JSON><any> {
+            "id": (newLike.id != null) ? newLike.id.toString() : null,
+            "user_fkey": newLike.user_fkey,
+            "comment_id": (newLike.comment_id != null) ? newLike.comment_id.toString() : null,
+            "post_connection_id": (newLike.post_connection_id != null) ? newLike.post_connection_id.toString() : null,
+            "like_status": newLike.like_status,
+        }
+
+        return likeJSON;
     }
 
     async updateLike(user_fkey: string, like_id: bigint, like_status: string): Promise<any> {

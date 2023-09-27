@@ -3,7 +3,7 @@ export default class Comment {
     poster_fkey?: string;
     contents?: string;
     time_posted?: string;
-    post_id?: bigint;
+    post_connection_id?: bigint;
     parent_id?: bigint;
     likes?: number;
 }

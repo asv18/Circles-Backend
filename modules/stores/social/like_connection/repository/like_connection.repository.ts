@@ -18,13 +18,15 @@ class LikeConnectionRepository {
         return await database.queryArray(`
             INSERT INTO "like_connection" ("user_fkey", "comment_id", "post_connection_id", "like_status")
             VALUES ('${like.user_fkey}', ${like.comment_id == undefined ? null : `'${like.comment_id}'`}, 
-            ${like.post_connection_id == undefined ? null : `'${like.post_connection_id}'`}, 'liked');
+            ${like.post_connection_id == undefined ? null : `'${like.post_connection_id}'`}, 'liked')
+            RETURNING *;
         `);
     }
 
     async updateLike(like: LikeConnection): Promise<any> {
         return await database.queryArray(`
-            UPDATE "like_connection" SET "like_status" = '${like.like_status}' WHERE "id" = '${like.id}' AND "user_fkey" = '${like.user_fkey}';
+            UPDATE "like_connection" 
+            SET "like_status" = '${like.like_status}' WHERE "id" = '${like.id}' AND "user_fkey" = '${like.user_fkey}';
         `);
     }
 
