@@ -8,7 +8,7 @@ class CirclePostsService {
     async getCirclePosts(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
 
-        const data = await circlePostsRepository.getCirclePosts(body["circle_id"]);
+        const data = await circlePostsRepository.getCirclePosts(body["circle_id"], body["offset"]);
         const user_fkey = body["user_fkey"];
 
         let circlePosts = new Array<JSON>();

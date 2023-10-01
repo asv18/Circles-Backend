@@ -7,7 +7,9 @@ class CommentService {
     async getComments(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
 
-        const data = await commentRepository.getComments(body["post_connection_id"]);
+        const offset = body["offset"];
+
+        const data = await commentRepository.getComments(body["post_connection_id"], offset);
         const user_fkey = body["user_fkey"];
 
         const comments = new Array<JSON>();
@@ -27,6 +29,7 @@ class CommentService {
                 "post_id": comment.post_connection_id.toString(),
                 "parent_id": comment.parent_id != null ? comment.parent_id.toString() : null,
                 "likes": comment.likes.toString(),
+                "overall_count": comment.overall_count.toString(),
             }
 
             comments.push(commentJson);
@@ -39,7 +42,7 @@ class CommentService {
 
             const liked = await likeConnectionService.getLike(user_fkey, undefined, comments[i]["id" as keyof typeof comments[typeof i]] as string);
 
-            const children = await this.getChildren(body["post_connection_id"], comments[i]["id" as keyof typeof comments[typeof i]] as string, user_fkey);
+            const children = await this.getChildren(body["post_connection_id"], comments[i]["id" as keyof typeof comments[typeof i]] as string, user_fkey, 0);
 
             const commentJSON: JSON = <JSON><any> {
                 "id": comments[i]["id" as keyof typeof comments[typeof i]],
@@ -51,6 +54,7 @@ class CommentService {
                 "parent_id": comments[i]["parent_id" as keyof typeof comments[typeof i]],
                 "likes": comments[i]["likes" as keyof typeof comments[typeof i]],
                 "liked": liked,
+                "overall_count_children": comments[i]["overall_count" as keyof typeof comments[typeof i]],
                 "children": children,
             }
 
@@ -60,8 +64,8 @@ class CommentService {
         return comments;
     }
 
-    async getChildren(post_connection_id: string, comment_id: string, user_fkey: string): Promise<any> {
-        const data = await commentRepository.getChildren(post_connection_id, comment_id);
+    async getChildren(post_connection_id: string, comment_id: string, user_fkey: string, offset: number): Promise<any> {
+        const data = await commentRepository.getChildren(post_connection_id, comment_id, offset);
 
         const comments = new Array<JSON>();
 
@@ -120,9 +124,9 @@ class CommentService {
         newComment.post_connection_id = body["post_id"];
         newComment.parent_id = body["parent_id"];
 
-        const comment: any = new Comment();
+        const data = await commentRepository.createComment(newComment); 
 
-        const data = await commentRepository.createComment(comment); 
+        const comment: any = new Comment();
 
         data.rows.map((a_comment: []) => {
             data.rowDescription.columns.map((item: any, index: number) => {
@@ -145,6 +149,7 @@ class CommentService {
             "parent_id": comment.parent_id != null ? comment.parent_id.toString() : null,
             "likes": comment.likes.toString(),
             "liked": liked,
+            "overall_count_children": comment.overall_count.toString(),
         }
 
         return commentJson;

@@ -1,9 +1,10 @@
 export default class Comment {
-    id?: bigint;
+    id?: string;
     poster_fkey?: string;
     contents?: string;
     time_posted?: string;
-    post_connection_id?: bigint;
-    parent_id?: bigint;
+    post_connection_id?: string;
+    parent_id?: string;
     likes?: number;
+    overall_count?: number;
 }

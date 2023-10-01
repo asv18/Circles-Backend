@@ -13,6 +13,19 @@ class CommentController {
         }
     }
 
+    async getChildComments(ctx: any): Promise<any> {
+        const json = await ctx.request.body().value;
+
+        ctx.response.status = 200;
+        ctx.response.body = {
+            meta: {
+                code: 200,
+                status: "Ok",
+            },
+            data: await commentService.getChildren(json["post_connection_id"], json["comment_id"], json["user_fkey"], json["offset"])
+        }
+    }
+
     async createComment(ctx: any): Promise<any> {     
         ctx.response.status = 201;
         ctx.response.body = {

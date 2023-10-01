@@ -5,8 +5,10 @@ import Circle from "../dto/circles.dto.ts";
 class CirclesRepository {
     async getCirclesOfUser(userKey: string): Promise<any> {
         return await database.queryArray(`
-            SELECT "id", CAST("created_at" AS STRING), CAST("last_interacted_date" AS STRING), "circle_name", "image", "created_by", "admin" FROM "circle_connection" circle_connection
-            INNER JOIN "circle" c ON c.id = circle_connection.circle_id WHERE circle_connection.user_fkey = '${userKey}';
+            SELECT "id", CAST("created_at" AS STRING), CAST("last_interacted_date" AS STRING), "circle_name",
+            "image", "created_by", "admin",
+            (SELECT COUNT(*) FROM "circle_post_connection" AS INT8 WHERE "circle_id" = c."id") AS "post_count"
+            FROM "circle_connection" circle_connection INNER JOIN "circle" c ON c.id = circle_connection.circle_id WHERE circle_connection.user_fkey = '${userKey}';
         `);
     }
 

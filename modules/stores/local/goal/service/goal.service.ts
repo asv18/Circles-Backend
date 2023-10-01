@@ -155,7 +155,8 @@ class GoalService {
     }
 
     async delete(ctx: any): Promise<any> {
-        const body = ctx.request.body().value;
+        const body = await ctx.request.body().value;
+        
         return await goalRepository.delete(ctx.params.id, body["user_id"]);
     }
 }

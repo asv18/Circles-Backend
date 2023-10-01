@@ -18,8 +18,6 @@ class CirclesService {
             data.rowDescription.columns.map((item: any, index: number) => {
                 circle[item.name] = a_circle[index]
             });
-
-            //"admin": circle.admin,
             
 
             const circleJSON: JSON = <JSON><any> {
@@ -30,6 +28,7 @@ class CirclesService {
                 "image": circle.image,
                 "created_by": circle.created_by,
                 "admin": circle.admin,
+                "post_count": circle.post_count.toString()
             }
 
             circles.push(circleJSON);
@@ -50,6 +49,7 @@ class CirclesService {
                 "image": circles[i]["image" as keyof typeof circles[typeof i]],
                 "created_by": circles[i]["created_by" as keyof typeof circles[typeof i]],
                 "admin": adminJSON,
+                "post_count": circles[i]["post_count" as keyof typeof circles[typeof i]],
                 "users": users
             }
 
