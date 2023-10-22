@@ -1,6 +1,17 @@
 import circlesService from "../service/circles.service.ts";
 
 class CirclesController {
+    async queryCircles(ctx: any): Promise<any> {
+        ctx.response.status = 200;
+        ctx.response.body = {
+            meta: {
+                code: 200,
+                status: "Ok",
+            },
+            data: await circlesService.queryCircles(ctx)
+        }
+    }
+
     async getCirclesOfUser(ctx: any): Promise<any> {
         ctx.response.status = 200;
         ctx.response.body = {

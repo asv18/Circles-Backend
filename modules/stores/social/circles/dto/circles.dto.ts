@@ -7,4 +7,5 @@ export default class Circle {
     image?: string;
     created_by?: string;
     admin?: string;
+    publicity?: string;
 }

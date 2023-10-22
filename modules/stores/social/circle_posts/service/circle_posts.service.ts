@@ -69,7 +69,7 @@ class CirclePostsService {
         const body = await ctx.request.body().value;
 
         let post = new CirclePost();
-
+        
         post.title = body["title"];
         post.description = body["description"];
         post.image = body["image"];

@@ -5,6 +5,60 @@ import Circle from "../dto/circles.dto.ts";
 import circlesRepository from "../repository/circles.repository.ts";
 
 class CirclesService {
+    async queryCircles(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const data = await circlesRepository.getAvailableCircles(body["offset"], body["query"], body["user_fkey"]);
+
+        let circles = new Array<JSON>();
+
+        data.rows.map((a_circle: []) => {
+            const circle: any = new Circle();
+
+            data.rowDescription.columns.map((item: any, index: number) => {
+                circle[item.name] = a_circle[index]
+            });
+            
+
+            const circleJSON: JSON = <JSON><any> {
+                "id": circle.id,
+                "created_at": circle.created_at,
+                "last_interacted_date": circle.last_interacted_date,
+                "circle_name": circle.circle_name,
+                "image": circle.image,
+                "created_by": circle.created_by,
+                "admin": circle.admin,
+                "publicity": circle.publicity
+            }
+
+            circles.push(circleJSON);
+        });
+        
+        for (let i = 0; i < circles.length; i++) {
+            const users = await this.getUsersOfCircle(circles[i]["id" as keyof typeof circles[typeof i]].toString());
+
+            const admin = circles[i]["admin" as keyof typeof circles[typeof i]] as string;
+
+            let adminJSON = await userService.getByFKey(admin);
+
+            const circle: JSON = <JSON><any> {
+                "id": circles[i]["id" as keyof typeof circles[typeof i]],
+                "created_at": circles[i]["created_at" as keyof typeof circles[typeof i]],
+                "last_interacted_date": circles[i]["last_interacted_date" as keyof typeof circles[typeof i]],
+                "circle_name": circles[i]["circle_name" as keyof typeof circles[typeof i]],
+                "image": circles[i]["image" as keyof typeof circles[typeof i]],
+                "created_by": circles[i]["created_by" as keyof typeof circles[typeof i]],
+                "admin": adminJSON,
+                "users": users,
+                "publicity": circles[i]["publicity" as keyof typeof circles[typeof i]]
+            }
+
+            circles[i] = circle;
+        }
+
+        return circles;
+    }
+
     async getCirclesOfUser(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
 
@@ -28,7 +82,8 @@ class CirclesService {
                 "image": circle.image,
                 "created_by": circle.created_by,
                 "admin": circle.admin,
-                "post_count": circle.post_count.toString()
+                "post_count": circle.post_count.toString(),
+                "publicity": circle.publicity
             }
 
             circles.push(circleJSON);
@@ -50,7 +105,8 @@ class CirclesService {
                 "created_by": circles[i]["created_by" as keyof typeof circles[typeof i]],
                 "admin": adminJSON,
                 "post_count": circles[i]["post_count" as keyof typeof circles[typeof i]],
-                "users": users
+                "users": users,
+                "publicity": circles[i]["publicity" as keyof typeof circles[typeof i]]
             }
 
             circles[i] = circle;
@@ -83,6 +139,7 @@ class CirclesService {
             "created_by": circle.created_by,
             "admin": circle.admin,
             "users": users,
+            "publicity": circle.publicity
         }
         
 
@@ -134,6 +191,7 @@ class CirclesService {
         circle.image = body["image"];
         circle.created_by = body["user_creator"];
         circle.admin = body["user_creator"];
+        circle.publicity = body["publicity"];
 
         return await circlesRepository.createCircle(circle);
     }
