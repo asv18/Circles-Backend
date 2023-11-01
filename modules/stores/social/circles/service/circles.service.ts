@@ -130,6 +130,10 @@ class CirclesService {
 
         const users = await this.getUsersOfCircle(body["circle_id"]);
 
+        const admin = circle["admin"] as string;
+
+        let adminJSON = await userService.getByFKey(admin);
+
         const circleJSON: JSON = <JSON><any> {
             "id": circle.id,
             "created_at": circle.created_at,
@@ -137,7 +141,7 @@ class CirclesService {
             "circle_name": circle.circle_name,
             "image": circle.image,
             "created_by": circle.created_by,
-            "admin": circle.admin,
+            "admin": adminJSON,
             "users": users,
             "publicity": circle.publicity
         }

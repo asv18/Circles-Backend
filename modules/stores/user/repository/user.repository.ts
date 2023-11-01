@@ -11,6 +11,14 @@ class UserRepository {
         `)
     }
 
+    async getAllNotInCircle(query: string, circle_id: string): Promise<any> {
+        query = `LOWER('${query}')`
+
+        return await database.queryArray(`
+            SELECT "name","username","photo_url","email","user_foreign_key" FROM "user" WHERE (LOWER("name") ~ ${query} OR LOWER("username") ~ ${query}) AND NOT EXISTS(SELECT 1 FROM "circle_connection" WHERE "user_fkey" = "user_foreign_key" AND "circle_id" = '${circle_id}') LIMIT 10;
+        `)
+    }
+
     async getByFKey(user_fkey: string): Promise<any> {
         return await database.queryArray(`
             SELECT "name","username","photo_url","email","user_foreign_key" FROM "user" WHERE "user_foreign_key" = '${user_fkey}';

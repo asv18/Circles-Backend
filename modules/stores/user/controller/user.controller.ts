@@ -9,7 +9,20 @@ class UserController {
                 code: 200,
                 status: "Ok",
             },
-            data: await userService.getAll(ctx.request.url.searchParams.get('query').toString().replace('"', ''))
+            data: await userService.getAll(ctx.request.url.searchParams.get('query').toString())
+        }
+    }
+
+    async getAllNotInCircle(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        ctx.response.status = 200;
+        ctx.response.body = {
+            meta: {
+                code: 200,
+                status: "Ok",
+            },
+            data: await userService.getAllNotInCircle(ctx.request.url.searchParams.get('query').toString(), body["circle_id"])
         }
     }
 

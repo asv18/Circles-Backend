@@ -26,7 +26,10 @@ class CirclesRepository {
 
     async getCircleById(circleID: string): Promise<any> {
         return await database.queryArray(`
-            SELECT * FROM "circle" WHERE "id"='${circleID}';
+            SELECT "id", CAST("created_at" AS STRING), CAST("last_interacted_date" AS STRING), "circle_name",
+            "image", "created_by", "admin", "publicity",
+            (SELECT COUNT(*) FROM "circle_post_connection" AS INT8 WHERE "circle_id" = '${circleID}') AS "post_count" 
+            FROM "circle" WHERE "id"='${circleID}';
         `);
     }
 

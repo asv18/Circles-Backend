@@ -29,6 +29,7 @@ export const api = (router: any) => {
         .patch("/api/v1/user/goals/:goalID/tasks/:taskID/", TaskController.update)
         .delete("/api/v1/user/goals/:goalID/tasks/:taskID/", TaskController.delete)
         .get("/api/v1/user", UserController.getAll)
+        .post("/api/v1/user", UserController.getAllNotInCircle)
         .post("/api/v1/user/friendships/skeletons/", UserController.getFriendSkeletons)
         .post("/api/v1/user/friendships/", FriendshipController.getFriendshipsOfUser)
         .post("/api/v1/user/requests/", FriendshipController.getFriendshipRequestsOfUser)

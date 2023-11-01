@@ -27,6 +27,31 @@ class UserService {
         return users;
     }
 
+    async getAllNotInCircle(query: string, circle_id: string): Promise<any> {
+        const data = await userRepository.getAllNotInCircle(query, circle_id);
+
+        let users = new Array<JSON>();
+
+        data.rows.map((a_user: []) => {
+            const user: any = new User();
+
+            data.rowDescription.columns.map((item: any, index: number) => {
+                user[item.name] = a_user[index]
+            });
+
+            const userJson: JSON = <JSON><any> {
+                "name": user.name,
+                "username": user.username,
+                "photo_url": user.photo_url,
+                "user_foreign_key": user.user_foreign_key,
+            }
+
+            users.push(userJson);
+        });
+
+        return users;
+    }
+
     async getByFKey(user_fkey: string) {
         const data = await userRepository.getByFKey(user_fkey);
         let user: any = new User();
