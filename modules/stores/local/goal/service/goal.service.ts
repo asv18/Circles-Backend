@@ -147,7 +147,7 @@ class GoalService {
         goal.id = ctx.params.id;
         goal.owner = body["user_id"];
         goal.name = body["name"];
-        goal.finish_date = body["finish_date"];
+        goal.finish_date = body["end_date"];
         goal.progress = body["progress"];
         goal.description = body["description"];
 

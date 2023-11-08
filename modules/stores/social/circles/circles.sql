@@ -12,8 +12,3 @@ CREATE TABLE public.circle (
 );
 
 CREATE TYPE "circle_publicity" AS ENUM ('public', 'friends only', 'private');
-
-SELECT "id", CAST("created_at" AS STRING), CAST("last_interacted_date" AS STRING), "circle_name",
-"image", "created_by", "admin", "publicity" FROM "circle" WHERE
-NOT EXISTS(SELECT 1 FROM "circle_connection" WHERE "user_fkey" = 'ad9d3b2b-1b33-4d7f-a934-ce2b6a5f525d' AND "circle_id" = "id")
-OFFSET 0 FETCH NEXT 10 ROWS ONLY;

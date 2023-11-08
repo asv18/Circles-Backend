@@ -25,9 +25,9 @@ class TaskRepository {
     }
 
     async update(task: Task, user_id: string): Promise<any> {
-        //console.log(`UPDATE "task" SET "name" = '${task.name}', "repeat" = '${task.repeat}', "next_date" = '${task.next_date.toString()}', "complete" = '${task.complete}' WHERE "id" = ${task.id} AND "goal_id" = '${task.goal_id}';`)
+        console.log(`UPDATE "task" SET "name" = '${task.name}', "repeat" = '${task.repeat}', "next_date" = '${task.next_date}', "complete" = '${task.complete}' WHERE "id" = '${task.id}' AND "goal_id" = '${task.goal_id}' AND (SELECT exists (SELECT "id" FROM "goal" WHERE "id"='${task.goal_id}' AND "owner"='${user_id}' LIMIT 1));`)
 
-        return await database.queryArray(`UPDATE "task" SET "name" = '${task.name}', "repeat" = '${task.repeat}', "next_date" = '${task.next_date}', "complete" = '${task.complete}' WHERE "id" = ${task.id} AND "goal_id" = '${task.goal_id}' AND (SELECT exists (SELECT "id" FROM "goal" WHERE "id"='${task.goal_id}' AND "owner"='${user_id}' LIMIT 1));`)
+        return await database.queryArray(`UPDATE "task" SET "name" = '${task.name}', "repeat" = '${task.repeat}', "next_date" = '${task.next_date}', "complete" = '${task.complete}' WHERE "id" = '${task.id}' AND "goal_id" = '${task.goal_id}' AND (SELECT exists (SELECT "id" FROM "goal" WHERE "id"='${task.goal_id}' AND "owner"='${user_id}' LIMIT 1));`)
     }
 
     async delete(id: bigint, goal_id: string, user_id: string): Promise<any> {

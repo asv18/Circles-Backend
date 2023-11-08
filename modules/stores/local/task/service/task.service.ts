@@ -156,6 +156,8 @@ class TaskService {
         const body = await ctx.request.body().value;
         
         let task = new Task();
+
+        console.log(ctx.params.taskID);
         
         task.id = ctx.params.taskID
         task.goal_id = ctx.params.goalID
