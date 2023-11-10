@@ -125,7 +125,7 @@ class UserService {
 
     async getByID(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
-        const data = await userRepository.getByID(body["id"]);
+        const data = await userRepository.getByID(body["user_id"]);
         let user: any = new User();
 
         data.rows.map((dataUser: []) => {
@@ -170,7 +170,7 @@ class UserService {
         
         let user = new User();
         
-        user.id = body["id"];
+        user.id = body["user_id"];
         user.name = body["name"];
         user.username = body["username"];
         user.email = body["email"];
@@ -182,7 +182,7 @@ class UserService {
     async delete(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
 
-        return await userRepository.delete(body["id"]);
+        return await userRepository.delete(body["user_id"]);
     }
 
 }

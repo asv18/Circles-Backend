@@ -1,8 +1,25 @@
+import validate from "../../../validate.ts";
 import likeConnectionService from "../../like_connection/service/like_connection.service.ts";
 import circlePostsService from "../service/circle_posts.service.ts";
 
 class CirclePostsController {
     async getCirclePosts(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+        
         ctx.response.status = 200;
         ctx.response.body = {
             meta: {
@@ -14,6 +31,22 @@ class CirclePostsController {
     }
 
     async createCirclePost(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
         await circlePostsService.createCirclePost(ctx)
         
         ctx.response.status = 201;
@@ -26,6 +59,22 @@ class CirclePostsController {
     }
 
     async deleteCirclePost(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
         await circlePostsService.deleteCirclePost(ctx)
 
         ctx.response.status = 200;
@@ -38,6 +87,22 @@ class CirclePostsController {
     }
 
     async getUserPosts(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
         ctx.response.status = 200;
         ctx.response.body = {
             meta: {
@@ -49,6 +114,22 @@ class CirclePostsController {
     }
 
     async updateCirclePost(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
         await circlePostsService.updateCirclePost(ctx);
 
         ctx.response.status = 200;
@@ -63,7 +144,21 @@ class CirclePostsController {
     async updateLikeCirclePost(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
 
-        let like = body;
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
+        let like = "";
         
         if (body["like_id"] == null || body["like_id"] == undefined) {
             like = await likeConnectionService.createLike(body["user_fkey"], undefined, body["connection_id"]);

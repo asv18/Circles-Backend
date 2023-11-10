@@ -1,8 +1,25 @@
+import validate from "../../../validate.ts";
 import likeConnectionService from "../../like_connection/service/like_connection.service.ts";
 import commentService from "../service/comment.service.ts";
 
 class CommentController {
     async getComments(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+        
         ctx.response.status = 200;
         ctx.response.body = {
             meta: {
@@ -14,7 +31,21 @@ class CommentController {
     }
 
     async getChildComments(ctx: any): Promise<any> {
-        const json = await ctx.request.body().value;
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
 
         ctx.response.status = 200;
         ctx.response.body = {
@@ -22,7 +53,7 @@ class CommentController {
                 code: 200,
                 status: "Ok",
             },
-            data: await commentService.getChildren(json["post_connection_id"], json["comment_id"], json["user_fkey"], json["offset"])
+            data: await commentService.getChildren(body["post_connection_id"], body["comment_id"], body["user_fkey"], body["offset"])
         }
     }
 
@@ -38,6 +69,22 @@ class CommentController {
     }
 
     async updateComment(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
         await commentService.updateComment(ctx);
 
         ctx.response.status = 200;
@@ -50,6 +97,22 @@ class CommentController {
     }
 
     async deleteComment(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
         await commentService.deleteComment(ctx)
 
         ctx.response.status = 200;
@@ -64,7 +127,21 @@ class CommentController {
     async updateLikeComment(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
 
-        let like = body;
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
+        let like = "";
 
         if (body["like_id"] == null || body["like_id"] == undefined) {
             like = await likeConnectionService.createLike(body["user_fkey"], body["comment_id"], undefined);
