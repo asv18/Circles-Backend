@@ -1,8 +1,25 @@
 
 import userService from "../service/user.service.ts"
+import validate from "../../validate.ts";
 
 class UserController {
     async getAll(ctx: any): Promise<any> {
+        const body = ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
         ctx.response.status = 200;
         ctx.response.body = {
             meta: {
@@ -16,6 +33,20 @@ class UserController {
     async getAllNotInCircle(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
 
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
         ctx.response.status = 200;
         ctx.response.body = {
             meta: {
@@ -28,6 +59,21 @@ class UserController {
 
     async getFriendSkeletons(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
         ctx.response.status = 200;
         ctx.response.body = {
             meta: {
@@ -50,6 +96,22 @@ class UserController {
     }
 
     async getByID(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
         ctx.response.status = 200;
         ctx.response.body = {
             meta: {
@@ -73,6 +135,22 @@ class UserController {
     }
 
     async update(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
         await userService.update(ctx);
 
         ctx.response.status = 200;
@@ -85,6 +163,22 @@ class UserController {
     }
 
     async delete(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+        
         await userService.delete(ctx);
 
         ctx.response.status = 200;

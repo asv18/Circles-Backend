@@ -1,7 +1,24 @@
+import validate from "../../../validate.ts";
 import messageService from "../service/message.service.ts";
 
 class MessageController {
-    async getAll(ctx: any): Promise<any> {        
+    async getAll(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+        
         ctx.response.status = 200;
         ctx.response.body = {
             meta: {
@@ -13,6 +30,22 @@ class MessageController {
     }
 
     async create(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+        
         await messageService.create(ctx)
 
         ctx.response.status = 201;

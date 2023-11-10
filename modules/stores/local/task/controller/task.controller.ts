@@ -1,9 +1,23 @@
-import { CHAR_DOT } from "https://deno.land/std@0.160.0/path/_constants.ts";
 import taskService from "../service/task.service.ts";
+import validate from "../../../validate.ts";
 
 class TaskController {
     async getAll(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
 
         ctx.response.status = 200;
         ctx.response.body = {
@@ -17,6 +31,20 @@ class TaskController {
 
     async getByID(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
         
         ctx.response.status = 200;
         ctx.response.body = {
@@ -29,6 +57,22 @@ class TaskController {
     }
 
     async create(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
         await taskService.create(ctx);
 
         ctx.response.status = 201;
@@ -41,6 +85,22 @@ class TaskController {
     }
 
     async updateMultiple(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
         await taskService.updateMultiple(ctx);
 
         ctx.response.status = 200;
@@ -53,6 +113,22 @@ class TaskController {
     }
 
     async update(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
         await taskService.update(ctx);
 
         ctx.response.status = 200;
@@ -66,6 +142,21 @@ class TaskController {
 
     async delete(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+        
         await taskService.delete(ctx.params.taskID, ctx.params.goalID, body["user_id"]);
 
         ctx.response.status = 200;

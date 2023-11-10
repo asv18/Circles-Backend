@@ -6,7 +6,7 @@ import taskService from "../../task/service/task.service.ts";
 class GoalService {
     async getAll(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
-        const data = await goalRepository.getAll(body["id"])
+        const data = await goalRepository.getAll(body["user_id"])
 
         let goals = new Array<JSON>();
 
@@ -30,7 +30,7 @@ class GoalService {
         });
 
         for (let i = 0; i < goals.length; i++) {
-            const tasks = await taskService.getAll(goals[i]["id" as keyof typeof goals[typeof i]].toString(), body["id"]);
+            const tasks = await taskService.getAll(goals[i]["id" as keyof typeof goals[typeof i]].toString(), body["user_id"]);
 
             const goal: JSON = <JSON><any> {
                 "id": goals[i]["id" as keyof typeof goals[typeof i]],
@@ -50,7 +50,7 @@ class GoalService {
 
     async getByID(ctx: any): Promise<any> {
         const body = ctx.request.body().value;
-        const data = await goalRepository.getByID(ctx.params.id, body["id"])
+        const data = await goalRepository.getByID(ctx.params.id, body["user_id"])
         const goal: any = new Goal();
 
         data.rows.map((a_goal: []) => {

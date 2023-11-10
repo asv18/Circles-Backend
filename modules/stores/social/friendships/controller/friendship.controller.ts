@@ -1,8 +1,23 @@
+import validate from "../../../validate.ts";
 import friendshipService from "../service/friendship.service.ts";
 
 class FriendshipController {
     async getFriendshipsOfUser(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
 
         ctx.response.status = 200;
         ctx.response.body = {
@@ -15,6 +30,20 @@ class FriendshipController {
     }
     async getFriendshipRequestsOfUser(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
 
         ctx.response.status = 200;
         ctx.response.body = {
@@ -29,6 +58,20 @@ class FriendshipController {
     async getFriendship(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
 
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
         ctx.response.status = 200;
         ctx.response.body = {
             meta: {
@@ -40,6 +83,22 @@ class FriendshipController {
     }
 
     async createRequest(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
         await friendshipService.createRequest(ctx);
 
         ctx.response.status = 201;
@@ -52,6 +111,22 @@ class FriendshipController {
     }
 
     async updateFriendship(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
+
         await friendshipService.updateFriendship(ctx);
 
         ctx.response.status = 200;
@@ -65,6 +140,20 @@ class FriendshipController {
 
     async delete(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
+
+        const result = await validate.validateUser(body["user_id"])
+
+        if (!result) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                meta: {
+                    code: 401,
+                    status: "Not Authorized",
+                }
+            }
+
+            return;
+        }
         
         await friendshipService.delete(body["id"]);
 
