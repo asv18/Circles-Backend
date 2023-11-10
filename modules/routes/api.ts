@@ -60,10 +60,10 @@ export const api = (router: any) => {
                     friendshipID = data["friendship_id"];
 
                     sockets.set(uid, [ws, friendshipID]);
-                    console.log("User connected to server", friendshipID);
+                    // console.log("User connected to server", friendshipID);
                 }
                 else if (data["type"] == "message" && friendshipID != "") {
-                    console.log("Got message on server", friendshipID);
+                    // console.log("Got message on server", friendshipID);
 
                     data = await messageService.createFromSocket(data);
         
@@ -76,7 +76,7 @@ export const api = (router: any) => {
             };
     
             ws.onclose = () => {
-                console.log("Disconnected from server", friendshipID)
+                // console.log("Disconnected from server", friendshipID)
     
                 sockets.delete(uid);
             };

@@ -173,7 +173,6 @@ class UserService {
         user.id = body["id"];
         user.name = body["name"];
         user.username = body["username"];
-        user.password = body["password"];
         user.email = body["email"];
         user.photo_url = body["photo_url"];
 

@@ -44,7 +44,7 @@ class UserRepository {
     }
 
     async update(user: User): Promise<any> {
-        return await database.queryArray(`UPDATE "user" SET "name" = '${user.name}', "username" = '${user.username}', "password" = '${user.password}', "photo_url" = '${user.photo_url}'  WHERE "id" = '${user.id}';`)
+        return await database.queryArray(`UPDATE "user" SET "name" = '${user.name}', "username" = '${user.username}', "photo_url" = '${user.photo_url}'  WHERE "id" = '${user.id}';`)
     }
 
     async delete(id: string): Promise<any> {
