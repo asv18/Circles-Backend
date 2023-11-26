@@ -203,7 +203,38 @@ class CirclesService {
     async deleteCircle(ctx: any): Promise<any> {
         const body = await ctx.request.body().value;
 
-        return await circlesRepository.deleteCircle(body["circle_id"]);
+        return await circlesRepository.deleteCircle(body["circle_id"], body["user_fkey"], body["user_id"]);
+    }
+
+    async deleteCircleConnection(ctx: any): Promise<any> {
+        const body = await ctx.request.body().value;
+
+        const response = await circlesRepository.deleteCircleConnection(body["circle_id"], body["user_fkey"]);
+
+        let isAdmin = false;
+        const adminCheck = await circlesRepository.checkAdmin(body["circle_id"], body["user_fkey"]);
+
+        adminCheck.rows.map((exists_obj: []) => {
+            adminCheck.rowDescription!.columns.map((item: any, index: number) => {
+                isAdmin = exists_obj[index];
+            });
+        });
+
+        if (isAdmin) {
+            const user: any = new User();
+
+            let userGet = await circlesRepository.userGetFirst(body["circle_id"]);
+
+            userGet.rows.map((user_obj: []) => {
+                userGet.rowDescription!.columns.map((item: any, index: number) => {
+                    user[item.name] = user_obj[index];
+                });
+            });
+
+            await circlesRepository.updateCircleAdmin(body["circle_id"], user.user_foreign_key);
+        }
+
+        return response;
     }
 }
 

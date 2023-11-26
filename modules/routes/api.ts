@@ -90,6 +90,7 @@ export const api = (router: any) => {
         .delete("/api/v1/circles/", CirclesController.deleteCircle)
         .post("/api/v1/circles/users/", CirclesController.getUsersOfCircle)
         .post("/api/v1/users/circles/connect/", CirclesController.createCircleConnection)
+        .delete("/api/v1/users/circles/disconnect/", CirclesController.deleteCircleConnection)
         .post("/api/v1/circles/new/", CirclesController.createCircle)
         .post("/api/v1/circles/posts/", CirclePostsController.getCirclePosts)
         .post("/api/v1/user/posts/", CirclePostsController.createCirclePost)
