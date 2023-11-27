@@ -53,9 +53,35 @@ class CirclesRepository {
         `);
     }
 
-    async deleteCircle(id: string): Promise<any> {
+    async deleteCircle(id: string, user_fkey: string, user_id: string): Promise<any> {
         return await database.queryArray(`
-            DELETE FROM "circle" WHERE "id"=${id};
+            DELETE FROM "circle" WHERE "id"='${id}' AND "admin" = '${user_fkey}'
+            AND EXISTS(SELECT 1 FROM "user" WHERE "user_foreign_key"='${user_fkey}' AND "id"='${user_id}');
+        `);
+    }
+
+    async deleteCircleConnection(id: string, user_fkey: string): Promise<any> {
+        return await database.queryArray(`
+            DELETE FROM "circle_connection" WHERE "circle_id"='${id}' AND "user_fkey"='${user_fkey}';
+        `);
+    }
+
+    async checkAdmin(circle_id: string, user_fkey: string): Promise<any> {
+        return await database.queryArray(`
+            SELECT EXISTS (SELECT 1 FROM "circle" WHERE "id"='${circle_id}' AND "admin"='${user_fkey}');
+        `);
+    }
+
+    async updateCircleAdmin(circle_id: string, user_fkey: string): Promise<any> {
+        return await database.queryArray(`
+            UPDATE "circle" SET "user_fkey" = '${user_fkey}' WHERE "id" = '${circle_id}';
+        `);
+    }
+
+    async userGetFirst(circle_id: string): Promise<any> {
+        return await database.queryArray(`
+            SELECT "user_foreign_key" FROM "circle_connection" circle_connection INNER JOIN "user" u
+            ON u.user_foreign_key = circle_connection.user_fkey WHERE circle_connection.circle_id = '${circle_id}' LIMIT 1;
         `);
     }
 }

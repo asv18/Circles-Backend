@@ -145,7 +145,6 @@ class UserService {
             "photo_url": user.photo_url,
         }
 
-
         return userJSON;
     }
 
