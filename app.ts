@@ -5,6 +5,9 @@ const port = 3000;
 
 const app = new Application();
 
+app.use((ctx) => {
+    ctx.response.body = "All Operational!";
+  })
 app.use(router.routes());
 app.use(router.allowedMethods());
 
